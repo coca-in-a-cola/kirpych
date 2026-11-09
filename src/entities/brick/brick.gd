@@ -1,24 +1,29 @@
 class_name BrickController
 extends CharacterBody3D
 
-## Living Brick controller implementing inertia, sliding, jump flip, and speed metrics per GDD 0.4
+## Living Brick controller implementing inertia, sliding, jump flip, and speed metrics per GDD 0.4.
+## GDD 4: player input is a WEAK force that never sets speed; gravity along slopes and mechanisms
+## (tires, conveyors, lifts) are the primary speed source. Velocity is never renormalised.
 signal speed_changed(speed_kmh: float)
 signal jumped()
 signal bounced()
 signal landed(impact_velocity: float)
 
-@export var control_accel: float = 8.5          ## Weak steering acceleration (GDD: input doesn't set speed)
-@export var ground_friction: float = 1.8         ## Low sliding friction on flat surfaces
+@export var control_accel: float = 7.0          ## Peak self-propulsion force at rest (m/s^2), identical on ground and in air (GDD 3.3)
+@export var self_propel_max_speed: float = 9.0  ## Input thrust fades linearly to zero at this speed along the input direction (m/s)
+@export var ground_friction: float = 1.8         ## Base sliding friction (m/s^2) of a standard surface at rest
+@export var friction_speed_ref: float = 18.0     ## Speed (m/s) at which sliding friction doubles: f = mu * (1 + v / ref)
 @export var air_drag: float = 0.15              ## Minimal air drag (GDD: equal air control, no artificial penalty)
 @export var gravity: float = 18.0               ## Crisp world gravity
 @export var jump_impulse: float = 8.5           ## Instant vertical impulse
-@export var max_safe_speed: float = 40.0        ## Safety clamping speed (m/s) ~ 144 km/h
+@export var max_safe_speed: float = 40.0        ## Simulation-stability limit on |horizontal velocity| and |vertical velocity| (m/s) ~ 144 km/h
 
 ## Ghostrunner / Surf standard responsive tuning
 @export var coyote_time: float = 0.15           ## 0.15s window after leaving floor where jump still triggers
 @export var jump_buffer_time: float = 0.12      ## 0.12s window before landing where pressing jump buffers input
-@export var slope_accel_factor: float = 1.8     ## Gravitational acceleration multiplier along slopes
-@export var drift_responsiveness: float = 1.5   ## Lateral drift carving factor at high speeds
+
+## Below this horizontal speed input is applied as a plain vector force (no heading to steer yet)
+const STEER_MIN_SPEED: float = 0.5
 
 @onready var visual_root: Node3D = $VisualRoot
 @onready var input_controller: InputController = $InputController
@@ -41,6 +46,7 @@ func _ready() -> void:
 	floor_snap_length = 0.35
 	floor_constant_speed = false
 	floor_max_angle = deg_to_rad(65.0)
+	current_friction = ground_friction
 
 func _physics_process(delta: float) -> void:
 	var on_floor: bool = is_on_floor()
@@ -58,52 +64,28 @@ func _physics_process(delta: float) -> void:
 	was_on_floor_last_frame = on_floor
 	previous_vertical_speed = velocity.y
 
-	# 2. Gravity & Slope acceleration
+	# 2. Gravity & slope acceleration
 	if not on_floor:
 		velocity.y -= gravity * delta
 	else:
-		# Smooth slope acceleration down inclines
+		# Real projected gravity: the component of g along the floor plane is g * sin(angle).
 		var floor_normal: Vector3 = get_floor_normal()
 		var slope_angle: float = floor_normal.angle_to(Vector3.UP)
 		if slope_angle > 0.04:
 			var slope_dir: Vector3 = Vector3.DOWN.slide(floor_normal).normalized()
-			var slope_pull: float = gravity * sin(slope_angle) * slope_accel_factor
-			velocity += slope_dir * slope_pull * delta
+			velocity += slope_dir * (gravity * sin(slope_angle)) * delta
 
-	# 3. Camera-relative input steering with lateral drift
+	# 3. Camera-relative weak input force
 	var cam: Camera3D = get_viewport().get_camera_3d() if get_viewport() else null
 	var cam_basis: Basis = cam.global_transform.basis if cam else Basis.IDENTITY
 	var steer_dir: Vector3 = Vector3.ZERO
 	if input_controller:
 		steer_dir = input_controller.get_movement_vector(cam_basis)
 
-	var horiz_vel: Vector2 = Vector2(velocity.x, velocity.z)
-	var speed: float = horiz_vel.length()
-
 	if steer_dir.length_squared() > 0.001:
-		var desired_steer_2d: Vector2 = Vector2(steer_dir.x, steer_dir.z).normalized()
-		if speed > 2.0:
-			# Lateral drift: steering deflects velocity smoothly without snapping
-			var current_heading: Vector2 = horiz_vel.normalized()
-			var lateral_normal: Vector2 = Vector2(-current_heading.y, current_heading.x)
-			var lateral_input: float = desired_steer_2d.dot(lateral_normal)
-			var forward_input: float = desired_steer_2d.dot(current_heading)
+		_apply_input_force(Vector2(steer_dir.x, steer_dir.z).normalized(), delta)
 
-			var drift_force: Vector2 = lateral_normal * (lateral_input * control_accel * drift_responsiveness * delta)
-			var throttle_force: Vector2 = current_heading * (forward_input * control_accel * delta)
-			horiz_vel += drift_force + throttle_force
-
-			# Surf standard: maintain momentum while drifting / carving
-			if forward_input >= -0.1 and horiz_vel.length() < speed:
-				horiz_vel = horiz_vel.normalized() * speed
-
-			velocity.x = horiz_vel.x
-			velocity.z = horiz_vel.y
-		else:
-			velocity.x += steer_dir.x * control_accel * delta
-			velocity.z += steer_dir.z * control_accel * delta
-
-	# 4. Surface Friction
+	# 4. Surface friction (speed-dependent) / air drag
 	if on_floor:
 		var h_vel: Vector2 = Vector2(velocity.x, velocity.z)
 		var spd: float = h_vel.length()
@@ -117,14 +99,17 @@ func _physics_process(delta: float) -> void:
 				# Reduce drag when sliding downhill for surf glide
 				eff_friction = lerp(current_friction, current_friction * 0.15, downslope_dot)
 
-			var decel: float = eff_friction * delta
+			# Friction grows with speed so flat ground has a natural low equilibrium for self-propulsion
+			# and long flat coasts bleed off; it scales with the surface coefficient (awnings stay slick).
+			var decel: float = eff_friction * (1.0 + spd / friction_speed_ref) * delta
 			h_vel = h_vel.move_toward(Vector2.ZERO, decel)
 			velocity.x = h_vel.x
 			velocity.z = h_vel.y
 	else:
-		# Minimal air resistance
-		velocity.x = move_toward(velocity.x, 0.0, air_drag * delta)
-		velocity.z = move_toward(velocity.z, 0.0, air_drag * delta)
+		# Minimal air resistance, applied to the horizontal vector (not per axis)
+		var a_vel: Vector2 = Vector2(velocity.x, velocity.z).move_toward(Vector2.ZERO, air_drag * delta)
+		velocity.x = a_vel.x
+		velocity.z = a_vel.y
 
 	# 5. Jump Handling with Jump Buffer & Coyote Time
 	if input_controller and input_controller.consume_jump():
@@ -142,7 +127,7 @@ func _physics_process(delta: float) -> void:
 			audio_jump.play()
 		jumped.emit()
 
-	# 6. External Boosts (from bouncy tires / mechanisms)
+	# 6. External Boosts (from bouncy tires / mechanisms) — primary speed source, not input-limited
 	if external_boost != Vector3.ZERO:
 		velocity += external_boost
 		external_boost = Vector3.ZERO
@@ -150,9 +135,9 @@ func _physics_process(delta: float) -> void:
 			audio_bounce.play()
 		bounced.emit()
 
-	# Clamping for simulation stability
-	velocity = velocity.clamp(Vector3(-max_safe_speed, -max_safe_speed, -max_safe_speed),
-							  Vector3(max_safe_speed, max_safe_speed, max_safe_speed))
+	# Simulation-stability clamp: limit the horizontal VECTOR length (no diagonal leak), vertical separately.
+	var horiz: Vector2 = Vector2(velocity.x, velocity.z).limit_length(max_safe_speed)
+	velocity = Vector3(horiz.x, clampf(velocity.y, -max_safe_speed, max_safe_speed), horiz.y)
 
 	move_and_slide()
 
@@ -171,6 +156,45 @@ func _physics_process(delta: float) -> void:
 	# 8. Speedometer report
 	speed_changed.emit(get_speed_kmh())
 
+## Applies the weak control force (same on ground and in air, GDD 3.3).
+## - Thrust along the current heading fades to zero at self_propel_max_speed: input alone cannot
+##   push the brick fast; slopes and mechanisms can, because their acceleration is not faded.
+## - Braking (input against the heading) always gets the full force.
+## - The lateral component only ROTATES the existing velocity (magnitude preserved) by the angle
+##   the same force would deflect it, so carving redirects momentum and never adds kinetic energy.
+##   Turning gets slower at high speed purely from inertia (angle ~ a*dt / v), per the GDD
+##   acceptance rule "harder to turn at speed because of inertia, not artificial control cuts".
+func _apply_input_force(wish: Vector2, delta: float) -> void:
+	var horiz_vel: Vector2 = Vector2(velocity.x, velocity.z)
+	var speed: float = horiz_vel.length()
+	var dv: float = control_accel * delta
+
+	if speed < STEER_MIN_SPEED:
+		horiz_vel += wish * dv * _propulsion_factor(maxf(horiz_vel.dot(wish), 0.0))
+	else:
+		var heading: Vector2 = horiz_vel / speed
+		var along: float = wish.dot(heading)
+		var lateral: Vector2 = wish - heading * along
+
+		var new_speed: float = speed
+		if along > 0.0:
+			new_speed += along * dv * _propulsion_factor(speed)
+		else:
+			new_speed += along * dv  # full braking force
+
+		var lateral_len: float = lateral.length()
+		if lateral_len > 0.0001:
+			var turn: float = atan2(lateral_len * dv, speed)
+			heading = heading.rotated(signf(heading.cross(lateral)) * turn)
+
+		horiz_vel = heading * new_speed
+
+	velocity.x = horiz_vel.x
+	velocity.z = horiz_vel.y
+
+func _propulsion_factor(speed_along_input: float) -> float:
+	return clampf(1.0 - speed_along_input / self_propel_max_speed, 0.0, 1.0)
+
 func trigger_decorative_flip() -> void:
 	is_flipping = true
 	flip_progress = 0.0
@@ -181,5 +205,6 @@ func apply_bounce_impulse(impulse: Vector3) -> void:
 func set_surface_friction(f: float) -> void:
 	current_friction = f
 
+## Horizontal (X/Z) speed only — falling must not spike the speedometer.
 func get_speed_kmh() -> float:
-	return velocity.length() * 3.6
+	return Vector2(velocity.x, velocity.z).length() * 3.6
