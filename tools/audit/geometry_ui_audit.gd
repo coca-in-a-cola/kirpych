@@ -286,8 +286,11 @@ func _audit_level(path: String) -> void:
 
 # ---------------------------------------------------------------- fonts
 
+const UI_FONT_PATH := "res://assets/fonts/russo_one_regular.ttf"
+
+
 func _audit_fonts() -> void:
-	var font: FontFile = load("res://assets/fonts/lilita_one_regular.ttf")
+	var font: FontFile = load(UI_FONT_PATH)
 	var samples: Dictionary = {
 		"cyrillic_upper": "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ",
 		"cyrillic_lower": "абвгдеёжзийклмнопрстуфхцчшщъыьэюя",
@@ -299,7 +302,7 @@ func _audit_fonts() -> void:
 		for ch in samples[k]:
 			if not font.has_char(ch.unicode_at(0)):
 				missing += ch
-		print("AUDIT|FONT|lilita_one_regular.ttf|%s|missing=%d|%s" % [k, missing.length(), missing])
+		print("AUDIT|FONT|%s|%s|missing=%d|%s" % [UI_FONT_PATH.get_file(), k, missing.length(), missing])
 	print("AUDIT|FONT|allow_system_fallback=%s" % str(font.allow_system_fallback))
 	await process_frame
 

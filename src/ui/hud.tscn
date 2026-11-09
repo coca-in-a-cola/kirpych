@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://hud001"]
 
 [ext_resource type="Script" path="res://src/ui/hud.gd" id="1_hud"]
-[ext_resource type="FontFile" path="res://assets/fonts/lilita_one_regular.ttf" id="2_font"]
+[ext_resource type="FontFile" path="res://assets/fonts/russo_one_regular.ttf" id="2_font"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_speed_bg"]
 bg_color = Color(0.08, 0.11, 0.16, 0.85)
