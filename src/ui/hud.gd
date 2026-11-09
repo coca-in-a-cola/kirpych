@@ -7,8 +7,8 @@ extends CanvasLayer
 @onready var final_speed_label: Label = $VictoryPanel/FinalSpeedLabel
 @onready var rank_label: Label = $VictoryPanel/RankLabel
 @onready var restart_hint: Label = $VictoryPanel/RestartHint
-@onready var btn_next: Button = $VictoryPanel/BtnNextLevel
-@onready var btn_menu: Button = $VictoryPanel/BtnMenu
+@onready var btn_next: Button = $VictoryPanel/HBoxButtons/BtnNextLevel
+@onready var btn_menu: Button = $VictoryPanel/HBoxButtons/BtnMenu
 
 var next_level_scene: String = ""
 
