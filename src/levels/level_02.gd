@@ -9,7 +9,9 @@ extends Node3D
 @onready var hud: GameHUD = $GameHUD
 
 var is_game_over: bool = false
-var respawn_position: Vector3 = Vector3(0.0, 1.2, 0.0)
+## Spawn above the start of the (now solid, 0.55 m tall) conveyor so the brick lands on the belt
+## instead of facing its leading edge as a step it cannot climb.
+var respawn_position: Vector3 = Vector3(0.0, 1.2, 5.0)
 
 func _ready() -> void:
 	if brick and hud:

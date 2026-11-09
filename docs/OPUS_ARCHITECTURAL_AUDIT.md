@@ -104,3 +104,28 @@ Fixed in commit `fix(level2,systems): add Floor2->Floor3 connector, fix worker r
   - `GameManager.instance` is bound in `_enter_tree`.
   - Headless tests now run in `_initialize()` instead of `_init()`, because autoloads are not registered while `_init` runs.
   - test_campaign_flow.gd TEST 4 asserts that the live autoload records a real level finish.
+
+## Resolved (t_kp_16)
+
+Fixed in commit `fix(colliders): match visual/collider extents on L1/L2 floors, add solid bodies to props, fix L3 roof z-fight`. Closes P0 #3 and the roof/beam z-fight item from P1 #7.
+
+- **L1 StartScaffold:** the collider now matches the scaled `platform_large.glb` visual. Both measure (6.20, 0.55, 10.00) at y 11.50-12.05.
+- **L2 floors:** Floor1_LoadingBay, Floor2_Mezzanine and Floor3_UpperBay each have their own BoxMesh/BoxShape3D pair, sized identically: 14x1x32, 14x1x26 and 14x1x30. The floors previously shared one mesh resource, so their visuals and colliders drifted apart. level_02.gd now respawns at z=5, above the now-solid conveyor, instead of in front of its 0.55 m leading edge.
+- **Props get solid bodies:** a `StaticBody3D` was added alongside the existing trigger `Area3D` on:
+  - bouncy_tire (`SolidBody`, cylinder)
+  - awning_slide (`SolidBody`)
+  - conveyor_belt (`SolidBody`)
+  - exhaust_fan (`SolidBody`)
+  - cradle_finish (`CradleBaseBody`)
+  - its safety net (`SafetyNetBody`, inside cradle_finish.tscn)
+- **L3 roof/beam z-fight:** NarrowBeam was lowered to y=27.6, so its top (28.00) sits 0.05 m below the RoofPlatform top (28.05). ExhaustFan was moved to (27.65, z=40) so it sits on the beam end.
+- **Verification:**
+  - `tests/test_colliders.gd`: 12/12 visual/collider extent pairs match at 0.0000 deviation. The full headless suite passes.
+  - `tools/audit/geometry_ui_audit.gd` reports no MESH_COLLIDER_MISMATCH for level geometry. The only remaining mismatch is the intentional WorkerNPC helmet-vs-capsule pair.
+  - The audit still lists RoofPlatform<->NarrowBeam under ZFIGHT, with `gap=0.0500`. That is because the step equals the tool's `ZFIGHT_EPS` (0.05) and float rounding puts it just under the threshold.
+- **New probes:** `tools/audit/prop_traversal_probe.gd` and `tools/audit/conveyor_lift_gap_probe.gd`.
+- **Screenshots:** re-captured. The level_02 frame still shows a blown-out white floor on a black background, but the pre-change baseline looks the same, so this is not a regression from this change.
+
+### KNOWN OPEN ISSUE (not resolved)
+
+- The L2 conveyor-to-lift gap (z~28.5 to the MovingLift at z33-39) is a confirmed progression blocker — 0/90 tested traversal strategies reached Floor2 from the conveyor exit. This requires a dedicated geometry fix (extending Floor1, repositioning the lift, or adding a connector) and is tracked as a separate follow-up task.

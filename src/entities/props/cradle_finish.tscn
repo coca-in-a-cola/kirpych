@@ -1,9 +1,15 @@
-[gd_scene load_steps=7 format=3 uid="uid://cradle001"]
+[gd_scene load_steps=9 format=3 uid="uid://cradle001"]
 
 [ext_resource type="Script" path="res://src/entities/props/cradle_finish.gd" id="1_cradle"]
 [ext_resource type="PackedScene" path="res://src/entities/worker/worker_npc.tscn" id="2_worker"]
 [ext_resource type="Material" path="res://assets/materials/plywood_mat.tres" id="3_wood"]
 [ext_resource type="Material" path="res://assets/materials/tarp_mat.tres" id="4_tarp"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_cradle"]
+size = Vector3(4.5, 0.4, 2.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_net"]
+size = Vector3(8.0, 0.2, 8.0)
 
 [sub_resource type="BoxMesh" id="BoxMesh_cradle"]
 material = ExtResource("3_wood")
@@ -19,6 +25,13 @@ script = ExtResource("1_cradle")
 [node name="CradleBase" type="MeshInstance3D" parent="."]
 mesh = SubResource("BoxMesh_cradle")
 
+[node name="CradleBaseBody" type="StaticBody3D" parent="."]
+collision_layer = 2
+collision_mask = 5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CradleBaseBody"]
+shape = SubResource("BoxShape3D_cradle")
+
 [node name="WorkerNPC" parent="." instance=ExtResource("2_worker")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2, 0)
 run_speed = 0.0
@@ -26,3 +39,11 @@ run_speed = 0.0
 [node name="SafetyNetMesh" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, 0)
 mesh = SubResource("BoxMesh_net")
+
+[node name="SafetyNetBody" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -4.5, 0)
+collision_layer = 2
+collision_mask = 5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="SafetyNetBody"]
+shape = SubResource("BoxShape3D_net")

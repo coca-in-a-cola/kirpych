@@ -40,7 +40,7 @@ material = ExtResource("14_conc")
 size = Vector3(24.0, 1.0, 130.0)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_scaffold"]
-size = Vector3(6.2, 1.0, 10.0)
+size = Vector3(6.2, 0.55, 10.0)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ramp"]
 size = Vector3(6.0, 0.4, 20.0)
@@ -77,10 +77,11 @@ collision_layer = 2
 collision_mask = 5
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StartScaffold"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.275, 0)
 shape = SubResource("BoxShape3D_scaffold")
 
 [node name="PlatformMesh" parent="StartScaffold" instance=ExtResource("8_plat")]
-transform = Transform3D(3.1, 0, 0, 0, 1, 0, 0, 0, 2.5, 0, 0, 0)
+transform = Transform3D(1.24, 0, 0, 0, 1, 0, 0, 0, 2, 0, 0, 0)
 
 [node name="DownhillRamp" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.927, 0.374, 0, -0.374, 0.927, 0, 5.8, 14)
