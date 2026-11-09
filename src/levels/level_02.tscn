@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://lvl02_001"]
+[gd_scene load_steps=31 format=3 uid="uid://lvl02_001"]
 
 [ext_resource type="Script" path="res://src/levels/level_02.gd" id="1_lvl"]
 [ext_resource type="PackedScene" path="res://src/entities/brick/brick.tscn" id="2_brick"]
@@ -15,10 +15,19 @@
 [ext_resource type="Script" path="res://src/entities/props/conveyor_belt.gd" id="13_convscript"]
 [ext_resource type="Material" path="res://assets/materials/tire_mat.tres" id="14_belt"]
 
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_overcast"]
+sky_top_color = Color(0.3, 0.34, 0.4, 1)
+sky_horizon_color = Color(0.58, 0.57, 0.54, 1)
+ground_bottom_color = Color(0.12, 0.11, 0.1, 1)
+ground_horizon_color = Color(0.42, 0.4, 0.37, 1)
+
+[sub_resource type="Sky" id="Sky_overcast"]
+sky_material = SubResource("ProceduralSkyMaterial_overcast")
+
 [sub_resource type="Environment" id="Environment_ind"]
-background_mode = 1
-background_color = Color(0.06, 0.08, 0.12, 1)
-ambient_light_source = 2
+background_mode = 2
+sky = SubResource("Sky_overcast")
+ambient_light_source = 3
 ambient_light_color = Color(0.75, 0.8, 0.9, 1)
 tonemap_mode = 2
 
@@ -76,7 +85,7 @@ environment = SubResource("Environment_ind")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.966, -0.183, 0.183, 0, 0.707, 0.707, -0.259, -0.683, 0.683, 0, 25, 40)
 light_color = Color(1.0, 0.95, 0.85, 1)
-light_energy = 1.6
+light_energy = 1.0
 shadow_enabled = true
 
 [node name="BuildingFramework" parent="." instance=ExtResource("11_bld")]
@@ -131,7 +140,7 @@ shape = SubResource("BoxShape3D_floor2")
 mesh = SubResource("BoxMesh_floor2")
 
 [node name="RampConveyor_F2toF3" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.9486833, 0.31622776, 0, -0.31622776, 0.9486833, 0, 14.360263, 59.063244)
+transform = Transform3D(1, 0, 0, 0, 0.9465516, 0.32255231, 0, -0.32255231, 0.9465516, 0, 14.400690, 59.051029)
 collision_layer = 2
 collision_mask = 5
 
@@ -142,7 +151,7 @@ shape = SubResource("BoxShape3D_ramp_bed")
 mesh = SubResource("BoxMesh_ramp_bed")
 
 [node name="RampConveyor_F2toF3_Drive" type="Area3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.9486833, 0.31622776, 0, -0.31622776, 0.9486833, 0, 14.360263, 59.063244)
+transform = Transform3D(1, 0, 0, 0, 0.9465516, 0.32255231, 0, -0.32255231, 0.9465516, 0, 14.400690, 59.051029)
 collision_layer = 2
 collision_mask = 1
 script = ExtResource("13_convscript")

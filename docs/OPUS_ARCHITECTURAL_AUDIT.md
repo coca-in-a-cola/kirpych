@@ -140,3 +140,16 @@ Fixed in commit `fix(colliders): match visual/collider extents on L1/L2 floors, 
   - `tools/audit/conveyor_lift_gap_probe.gd` now reaches Floor2 in **53/108** strategy-runs. That includes 18/18 for the new `board` and `brake+board` strategies.
   - The full headless suite passes (test_brick_physics, test_level_02, test_level_03, test_campaign_flow, test_colliders, all exit 0).
   - test_colliders confirms the Floor1 visual and collider both span z 0..33.
+- **L2 blown-out lighting:** the WorldEnvironment used a flat background (`background_mode=1`), color ambient, and a 1.6-energy sun. It now matches the L1/L3 pattern:
+  - a procedural overcast industrial sky (`ProceduralSkyMaterial_overcast`, `background_mode=2`)
+  - sky ambient (`ambient_light_source=3`)
+  - DirectionalLight energy 1.0
+
+  In the 1280x720 gl_compatibility still, pure-white pixels dropped from 37.3% to 0.1%, dark pixels (L<=35) from 52.5% to 11.8%, and mid-tones rose from 10.1% to 88.0%.
+- **Residual z-fights** (`geometry_ui_audit.gd` now reports neither):
+  - L3: NarrowBeam was lowered to y=27.5 (top 27.90, a 0.15 m step down from the roof, within the 0.35 snap). ExhaustFan was lowered to y=27.55 so it keeps its 0.05 m step below the beam.
+  - L2: RampConveyor_F2toF3 (bed and drive Area3D) now pivots about its Floor2 edge (z=53, y=12.55), steepened 18.43 -> 18.82 deg. Its upper end now sits at y=16.63, 0.08 m *above* Floor3 (16.55), so the brick steps down onto Floor3 within snap.
+    - Lowering that end instead would have created a 5 cm step up, which the box-shaped brick cannot climb.
+- **Verification:**
+  - `tools/audit/ramp_beam_traversal_probe.gd`: Floor2->Floor3 is reached from all three start positions, and the roof->beam end is reached from both.
+  - The full suite passes. `conveyor_lift_gap_probe` still reports 53/108.
