@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://lvl02_001"]
+[gd_scene load_steps=29 format=3 uid="uid://lvl02_001"]
 
 [ext_resource type="Script" path="res://src/levels/level_02.gd" id="1_lvl"]
 [ext_resource type="PackedScene" path="res://src/entities/brick/brick.tscn" id="2_brick"]
@@ -23,7 +23,7 @@ ambient_light_color = Color(0.75, 0.8, 0.9, 1)
 tonemap_mode = 2
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_floor1"]
-size = Vector3(14.0, 1.0, 32.0)
+size = Vector3(14.0, 1.0, 33.0)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_floor2"]
 size = Vector3(14.0, 1.0, 26.0)
@@ -43,7 +43,21 @@ size = Vector3(5.0, 0.6, 12.649111)
 
 [sub_resource type="BoxMesh" id="BoxMesh_floor1"]
 material = ExtResource("12_conc")
-size = Vector3(14.0, 1.0, 32.0)
+size = Vector3(14.0, 1.0, 33.0)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_shaftwall"]
+size = Vector3(14.0, 12.45, 0.4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_shaftwall"]
+material = ExtResource("12_conc")
+size = Vector3(14.0, 12.45, 0.4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_toeguard"]
+size = Vector3(6.0, 13.2, 0.2)
+
+[sub_resource type="BoxMesh" id="BoxMesh_toeguard"]
+material = ExtResource("14_belt")
+size = Vector3(6.0, 13.2, 0.2)
 
 [sub_resource type="BoxMesh" id="BoxMesh_floor2"]
 material = ExtResource("12_conc")
@@ -69,7 +83,7 @@ shadow_enabled = true
 transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 4.5, 0, 0, 45)
 
 [node name="Floor1_LoadingBay" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 16)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 16.5)
 collision_layer = 2
 collision_mask = 5
 
@@ -83,7 +97,27 @@ mesh = SubResource("BoxMesh_floor1")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 16)
 
 [node name="MovingLift" parent="." instance=ExtResource("7_lift")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 36)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.35, 36)
+travel_distance = 13.0
+
+[node name="ToeGuardShape" type="CollisionShape3D" parent="MovingLift"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6.9, -2.9)
+shape = SubResource("BoxShape3D_toeguard")
+
+[node name="ToeGuardMesh" type="MeshInstance3D" parent="MovingLift"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6.9, -2.9)
+mesh = SubResource("BoxMesh_toeguard")
+
+[node name="LiftShaftBackWall" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5.225, 39.2)
+collision_layer = 2
+collision_mask = 5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="LiftShaftBackWall"]
+shape = SubResource("BoxShape3D_shaftwall")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="LiftShaftBackWall"]
+mesh = SubResource("BoxMesh_shaftwall")
 
 [node name="Floor2_Mezzanine" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12.05, 52)
