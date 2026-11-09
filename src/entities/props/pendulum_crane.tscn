@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://crane001"]
+
+[ext_resource type="Script" path="res://src/entities/props/pendulum_crane.gd" id="1_crane"]
+[ext_resource type="Material" path="res://assets/materials/concrete_mat.tres" id="2_mat"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_crane"]
+size = Vector3(5.0, 2.5, 6.0)
+
+[sub_resource type="BoxMesh" id="BoxMesh_crane"]
+material = ExtResource("2_mat")
+size = Vector3(5.0, 2.5, 6.0)
+
+[node name="PendulumCrane" type="AnimatableBody3D"]
+collision_layer = 2
+collision_mask = 5
+script = ExtResource("1_crane")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_crane")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_crane")
