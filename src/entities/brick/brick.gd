@@ -77,7 +77,11 @@ func _physics_process(delta: float) -> void:
 
 	# 3. Camera-relative weak input force
 	var cam: Camera3D = get_viewport().get_camera_3d() if get_viewport() else null
-	var cam_basis: Basis = cam.global_transform.basis if cam else Basis.IDENTITY
+	# Use the camera's roll/pitch-free movement basis when it provides one (CameraRail), so the visual
+	# roll-tilt juice can never skew WASD; fall back to the raw camera transform otherwise.
+	var cam_basis: Basis = Basis.IDENTITY
+	if cam:
+		cam_basis = cam.call("get_movement_basis") if cam.has_method("get_movement_basis") else cam.global_transform.basis
 	var steer_dir: Vector3 = Vector3.ZERO
 	if input_controller:
 		steer_dir = input_controller.get_movement_vector(cam_basis)

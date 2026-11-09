@@ -153,3 +153,44 @@ Fixed in commit `fix(colliders): match visual/collider extents on L1/L2 floors, 
 - **Verification:**
   - `tools/audit/ramp_beam_traversal_probe.gd`: Floor2->Floor3 is reached from all three start positions, and the roof->beam end is reached from both.
   - The full suite passes. `conveyor_lift_gap_probe` still reports 53/108.
+
+## Resolved (t_kp_18)
+
+Camera rewrite in `src/camera/camera_rail.gd` (closes P1 #6). **Approach: a real route rail (option a), not velocity look-ahead.** Each level now has an authored `CameraRailPath` (Path3D/Curve3D) bound through `CameraRail.rail_path`:
+- L1: 4 points, 137.7 m
+- L2: 6 points, 107.6 m
+- L3: 5 points, 118.7 m
+
+The camera yaw is the horizontal tangent of the rail at the point nearest the brick, sampled 2 m ahead. It is not taken from the brick's position offset or its velocity, which GDD 5 forbids. All three routes are currently straight in XZ along +Z, so their yaw is 0 everywhere. The curved case is covered by the probe on a synthetic 90-degree bend.
+
+- **Input drift (x*0.75 follow):** removed. The camera translates sideways to stay behind the brick, but its yaw stays locked to the rail.
+- **Roll in the input basis:** fixed. `get_movement_basis()` returns a yaw-only basis, and brick.gd reads it instead of `Camera3D.global_transform.basis`. Only the brick's input-basis read changed; its physics are untouched.
+  - Roll (lean), pitch and FOV are now applied only to the visual Camera3D transform.
+  - The roll juice is preserved and actually reaches the intended amount: about 3.8-4.0 degrees at a lateral speed of 7 m/s. Before, `look_at()` reset `rotation.z` every tick, so only about 0.56 degrees was ever visible.
+- **Airborne basis freeze (GDD 2.6/7):** the rail yaw target is frozen while the brick is in the air.
+  - After landing, the yaw eases back toward the rail at a capped rate of at most 90 deg/s (1.5 degrees per tick), so the basis never jumps.
+- **Z snap vs x/y lerp:** all three axes now use the same frame-rate-independent exponential smoothing, decomposed into along-track, lateral and vertical axes of the rail frame.
+  - Along-track also gets the brick's own along-track displacement fed forward, so follow distance does not stretch with speed.
+  - A teleport larger than 12 m (respawn) snaps the camera.
+- **Occlusion:** a sphere cast (r = 0.25) runs from a pivot 0.6 m above the brick toward the ideal camera spot, against layer 2 (level geometry), excluding the brick.
+  - On a hit the camera pulls in immediately, to no closer than 0.8 m, and eases back out at a rate of 4/s once the view clears.
+- **Preserved:** the speed FOV punch (75 -> 96 deg) and the landing dip.
+
+**Proof:** `tools/audit/camera_drift_probe.gd` measures the basis exactly as brick.gd selects it, plus the ground-truth velocity direction of one tick of W from rest.
+
+| Metric | Before (318b9bf) | After |
+|---|---|---|
+| W yaw error at brick x=0 / 4 / 8 / 11 | 0.00 / 6.63 / 13.09 / 17.73 deg | 0.00 / 0.00 / 0.00 / 0.00 deg |
+| D skew vs roll-free screen-right, roll active | 0.12 deg (at 0.56 deg roll) | 0.000 deg (at 3.8-4.0 deg roll) |
+| D skew if the rolled transform still fed input (counterfactual) | - | 0.84-0.88 deg |
+| Curved rail (0 / 45 / 90 deg segments): visual yaw vs W yaw | n/a (no rail) | 0.000 deg mismatch |
+| Basis yaw change during an 81-tick jump across a segment change | n/a | 0.000 deg |
+| Wall 2.5 m behind the brick | camera at z=595.40, behind the wall face (597.70) | camera pulled to z=597.95, in front of the wall. After removing the wall it returns to the full 5.14 m |
+
+The full suite passes: test_brick_physics, test_level_02, test_level_03, test_campaign_flow and test_colliders all exit 0 with no errors.
+
+Stills were re-captured with `tools/capture/capture_stills.tscn`. In all three levels the brick is centred, the horizon is level and nothing clips. The main menu has 0 pixels differing by more than 16 from the previous capture.
+
+**Follow-ups:**
+- The authored rails are straight because the level layouts are straight. Directed curved segments, and a camera that steers into them, need level-design passes.
+- The occlusion probe also reacts to moving layer-2 props (crane, lift). It has not yet been play-tested for pumping as the crane swings through the view.

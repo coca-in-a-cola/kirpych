@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://lvl01_001"]
+[gd_scene load_steps=23 format=3 uid="uid://lvl01_001"]
 
 [ext_resource type="Script" path="res://src/levels/level_01.gd" id="1_lvl"]
 [ext_resource type="PackedScene" path="res://src/entities/brick/brick.tscn" id="2_brick"]
@@ -48,6 +48,13 @@ size = Vector3(6.0, 0.4, 20.0)
 [sub_resource type="BoxMesh" id="BoxMesh_ramp"]
 material = ExtResource("15_wood")
 size = Vector3(6.0, 0.4, 20.0)
+
+[sub_resource type="Curve3D" id="Curve3D_camrail"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 12.05, -6, 0, 0, 0, 0, 0, 0, 0, 12.05, 5, 0, 0, 0, 0, 0, 0, 0, 0, 23, 0, 0, 0, 0, 0, 0, 0, 0, 128),
+"tilts": PackedFloat32Array(0, 0, 0, 0)
+}
+point_count = 4
 
 [node name="Level01" type="Node3D"]
 script = ExtResource("1_lvl")
@@ -128,9 +135,13 @@ transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, 0, 118)
 [node name="Brick" parent="." instance=ExtResource("2_brick")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12.6, -2)
 
+[node name="CameraRailPath" type="Path3D" parent="."]
+curve = SubResource("Curve3D_camrail")
+
 [node name="CameraRail" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.966, 0.259, 0, -0.259, 0.966, 0, 14.8, -6.8)
 script = ExtResource("3_cam")
+rail_path = NodePath("../CameraRailPath")
 
 [node name="WorkerNPC" parent="." instance=ExtResource("4_worker")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 85)
