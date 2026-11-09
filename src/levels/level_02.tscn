@@ -85,6 +85,9 @@ _data = {
 }
 point_count = 6
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_boundary_side"]
+size = Vector3(1.0, 4.0, 100.0)
+
 [node name="Level02" type="Node3D"]
 script = ExtResource("1_lvl")
 
@@ -154,6 +157,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 16)
 [node name="MovingLift" parent="." instance=ExtResource("7_lift")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.35, 36)
 travel_distance = 13.0
+cycle_duration = 5.0
+dwell_time_bottom = 2.4
+dwell_time_top = 2.0
 
 [node name="ToeGuardShape" type="CollisionShape3D" parent="MovingLift"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6.9, -2.9)
@@ -335,3 +341,15 @@ script = ExtResource("3_cam")
 rail_path = NodePath("../CameraRailPath")
 
 [node name="GameHUD" parent="." instance=ExtResource("5_hud")]
+
+[node name="Level02Boundaries" type="StaticBody3D" parent="."]
+collision_layer = 2
+collision_mask = 5
+
+[node name="LeftBoundary" type="CollisionShape3D" parent="Level02Boundaries"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5, 8.0, 50.0)
+shape = SubResource("BoxShape3D_boundary_side")
+
+[node name="RightBoundary" type="CollisionShape3D" parent="Level02Boundaries"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 8.0, 50.0)
+shape = SubResource("BoxShape3D_boundary_side")

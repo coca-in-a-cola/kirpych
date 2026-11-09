@@ -59,6 +59,18 @@ _data = {
 }
 point_count = 4
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_perimeter_ns"]
+size = Vector3(1.0, 6.0, 140.0)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_perimeter_ew"]
+size = Vector3(26.0, 6.0, 1.0)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_truck_solid"]
+size = Vector3(2.8, 2.8, 5.8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_building_large"]
+size = Vector3(6.0, 5.0, 8.5)
+
 [node name="Level01" type="Node3D"]
 script = ExtResource("1_lvl")
 
@@ -394,3 +406,83 @@ rail_path = NodePath("../CameraRailPath")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 85)
 
 [node name="GameHUD" parent="." instance=ExtResource("5_hud")]
+
+[node name="SolidPerimeterColliders" type="StaticBody3D" parent="."]
+collision_layer = 2
+collision_mask = 5
+
+[node name="WallLeftSolid" type="CollisionShape3D" parent="SolidPerimeterColliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.5, 2.5, 55.0)
+shape = SubResource("BoxShape3D_perimeter_ns")
+
+[node name="WallRightSolid" type="CollisionShape3D" parent="SolidPerimeterColliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.5, 2.5, 55.0)
+shape = SubResource("BoxShape3D_perimeter_ns")
+
+[node name="WallBackSolid" type="CollisionShape3D" parent="SolidPerimeterColliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, 2.5, -10.5)
+shape = SubResource("BoxShape3D_perimeter_ew")
+
+[node name="WallFrontSolid" type="CollisionShape3D" parent="SolidPerimeterColliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, 2.5, 122.0)
+shape = SubResource("BoxShape3D_perimeter_ew")
+
+[node name="TruckColliders" type="StaticBody3D" parent="."]
+collision_layer = 2
+collision_mask = 5
+
+[node name="TruckCol1" type="CollisionShape3D" parent="TruckColliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.0, 1.4, 12.0)
+shape = SubResource("BoxShape3D_truck_solid")
+
+[node name="TruckCol2" type="CollisionShape3D" parent="TruckColliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.2, 1.4, 34.0)
+shape = SubResource("BoxShape3D_truck_solid")
+
+[node name="TruckCol3" type="CollisionShape3D" parent="TruckColliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.0, 1.4, 42.0)
+shape = SubResource("BoxShape3D_truck_solid")
+
+[node name="TruckCol4" type="CollisionShape3D" parent="TruckColliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.0, 1.4, 70.0)
+shape = SubResource("BoxShape3D_truck_solid")
+
+[node name="TruckCol5" type="CollisionShape3D" parent="TruckColliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.0, 1.4, 24.0)
+shape = SubResource("BoxShape3D_truck_solid")
+
+[node name="TruckCol6" type="CollisionShape3D" parent="TruckColliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.0, 1.4, 60.0)
+shape = SubResource("BoxShape3D_truck_solid")
+
+[node name="TruckCol7" type="CollisionShape3D" parent="TruckColliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.0, 1.4, 90.0)
+shape = SubResource("BoxShape3D_truck_solid")
+
+[node name="BuildingColliders" type="StaticBody3D" parent="."]
+collision_layer = 2
+collision_mask = 5
+
+[node name="BldColWest1" type="CollisionShape3D" parent="BuildingColliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.5, 2.5, 2.0)
+shape = SubResource("BoxShape3D_building_large")
+
+[node name="BldColWest2" type="CollisionShape3D" parent="BuildingColliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.5, 2.5, 48.0)
+shape = SubResource("BoxShape3D_building_large")
+
+[node name="BldColWest3" type="CollisionShape3D" parent="BuildingColliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.5, 2.5, 78.0)
+shape = SubResource("BoxShape3D_building_large")
+
+[node name="BldColEast1" type="CollisionShape3D" parent="BuildingColliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.5, 2.5, 14.0)
+shape = SubResource("BoxShape3D_building_large")
+
+[node name="BldColEast2" type="CollisionShape3D" parent="BuildingColliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.5, 2.5, 58.0)
+shape = SubResource("BoxShape3D_building_large")
+
+[node name="BldColEast3" type="CollisionShape3D" parent="BuildingColliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.5, 2.5, 94.0)
+shape = SubResource("BoxShape3D_building_large")

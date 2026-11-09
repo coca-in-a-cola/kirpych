@@ -58,6 +58,12 @@ _data = {
 }
 point_count = 5
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_roof_parapet_ns"]
+size = Vector3(0.5, 1.2, 24.0)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_roof_parapet_ew"]
+size = Vector3(12.0, 1.2, 0.5)
+
 [node name="Level03" type="Node3D"]
 script = ExtResource("1_lvl")
 
@@ -255,3 +261,19 @@ script = ExtResource("3_cam")
 rail_path = NodePath("../CameraRailPath")
 
 [node name="GameHUD" parent="." instance=ExtResource("4_hud")]
+
+[node name="RooftopParapetColliders" type="StaticBody3D" parent="."]
+collision_layer = 2
+collision_mask = 5
+
+[node name="ParapetLeft" type="CollisionShape3D" parent="RooftopParapetColliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.0, 28.65, 10.0)
+shape = SubResource("BoxShape3D_roof_parapet_ns")
+
+[node name="ParapetRight" type="CollisionShape3D" parent="RooftopParapetColliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.0, 28.65, 10.0)
+shape = SubResource("BoxShape3D_roof_parapet_ns")
+
+[node name="ParapetBack" type="CollisionShape3D" parent="RooftopParapetColliders"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0, 28.65, -2.0)
+shape = SubResource("BoxShape3D_roof_parapet_ew")
