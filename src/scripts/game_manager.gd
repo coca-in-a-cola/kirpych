@@ -1,8 +1,16 @@
-class_name GameManager
 extends Node
 
-## Global Game Manager coordinating campaign progression, scoring, and level transitions
-static var instance: GameManager
+## Global Game Manager coordinating campaign progression, scoring, and level transitions.
+##
+## Registered as the `GameManager` autoload in project.godot ([autoload] section), so
+## gameplay code calls it directly: `GameManager.record_level_finish(...)`.
+## Deliberately has NO `class_name`: Godot 4 refuses to compile a global class whose name
+## equals an autoload ("Class \"GameManager\" hides an autoload singleton").
+##
+## `instance` is kept as an explicit accessor to the live singleton. It is bound in
+## _enter_tree (not _init), so a throwaway `GameManagerScript.new()` (as unit tests do)
+## can never hijack the singleton or leave it pointing at a freed object.
+static var instance: Node = null
 
 var current_level_index: int = 1
 var level_speeds: Dictionary = {1: 0.0, 2: 0.0, 3: 0.0}
@@ -12,8 +20,13 @@ var level_scenes: Dictionary = {
 	3: "res://src/levels/level_03.tscn"
 }
 
-func _init() -> void:
-	instance = self
+func _enter_tree() -> void:
+	if instance == null:
+		instance = self
+
+func _exit_tree() -> void:
+	if instance == self:
+		instance = null
 
 func start_campaign() -> void:
 	current_level_index = 1
@@ -22,12 +35,11 @@ func start_campaign() -> void:
 
 func load_level(idx: int) -> void:
 	current_level_index = idx
-	if level_scenes.has(idx):
-		var tree: SceneTree = get_tree()
-		if tree:
-			tree.change_scene_to_file(level_scenes[idx])
+	if level_scenes.has(idx) and is_inside_tree():
+		get_tree().change_scene_to_file(level_scenes[idx])
 
 func record_level_finish(level_idx: int, speed_kmh: float) -> void:
+	current_level_index = level_idx
 	level_speeds[level_idx] = speed_kmh
 
 func get_next_level() -> int:

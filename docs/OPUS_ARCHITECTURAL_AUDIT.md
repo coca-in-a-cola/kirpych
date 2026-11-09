@@ -93,3 +93,14 @@ The logs show no errors or warnings. The passes mean little: the tests call hand
 
 - The four freshly captured screenshots in artifacts/screenshots/ have not been visually reviewed yet; the L2 screenshot in particular (13.8 KB) needs a human/vision check for a near-blank frame.
 - The owner's specific 'half the buttons non-clickable' repro was not reproduced in a real windowed run; needs the owner's exact click sequence to confirm root cause.
+
+## Resolved (t_kp_15)
+
+Fixed in commit `fix(level2,systems): add Floor2->Floor3 connector, fix worker route past map edge, register GameManager autoload`:
+
+- **P0 #2 - L2 Floor2->Floor3 step:** added `RampConveyor_F2toF3` to level_02.tscn. It is an inclined StaticBody3D bed at about 18.4 deg, plus a conveyor_belt.gd drive Area3D, bridging the 4m wall at z=65.
+- **P0 #2 - L2 worker route:** `target_door_z` changed 120 -> 93.5, so the worker stops on Floor3, which ends at z=95. worker_npc.gd now applies gravity while running, so it can no longer glide past a floor edge.
+- **P0 #4 - GameManager:** registered as the `GameManager` autoload in project.godot. `class_name` was removed because it collided with the autoload name. Levels and the main menu now call the singleton directly.
+  - `GameManager.instance` is bound in `_enter_tree`.
+  - Headless tests now run in `_initialize()` instead of `_init()`, because autoloads are not registered while `_init` runs.
+  - test_campaign_flow.gd TEST 4 asserts that the live autoload records a real level finish.

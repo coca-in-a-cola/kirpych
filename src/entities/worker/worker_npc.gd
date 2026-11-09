@@ -41,6 +41,13 @@ func _physics_process(delta: float) -> void:
 	else:
 		velocity.z = 0.0
 	
+	# Real gravity while running, so the worker can never glide on air past a floor edge;
+	# each level must place target_door_z on solid floor (GDD 8: NPC stays in a reachable end zone).
+	if is_on_floor():
+		velocity.y = 0.0
+	else:
+		velocity.y -= 15.0 * delta
+	
 	move_and_slide()
 
 func _on_helmet_body_entered(body: Node3D) -> void:

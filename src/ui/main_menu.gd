@@ -31,16 +31,11 @@ func _ready() -> void:
 		controls_dialog.visible = false
 
 func _on_play_pressed() -> void:
-	_load_level(1)
+	# A full campaign run resets the recorded per-level speeds before loading level 1.
+	GameManager.start_campaign()
 
 func _load_level(idx: int) -> void:
-	var scenes: Dictionary = {
-		1: "res://src/levels/level_01.tscn",
-		2: "res://src/levels/level_02.tscn",
-		3: "res://src/levels/level_03.tscn"
-	}
-	if scenes.has(idx):
-		get_tree().change_scene_to_file(scenes[idx])
+	GameManager.load_level(idx)
 
 func _on_controls_pressed() -> void:
 	if controls_dialog:

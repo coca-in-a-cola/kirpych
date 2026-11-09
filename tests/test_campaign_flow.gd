@@ -1,9 +1,13 @@
 extends SceneTree
 
 const GameManagerScript = preload("res://src/scripts/game_manager.gd")
-const MainMenuScript = preload("res://src/ui/main_menu.gd")
+# main_menu.gd references the GameManager autoload, so it is loaded at runtime in
+# _initialize (a const preload would compile it before the autoload is registered).
+var MainMenuScript: Script
 
-func _init() -> void:
+# Runs in _initialize (not _init): autoloads such as GameManager are only added to the
+# tree and registered as global identifiers after the SceneTree script is constructed.
+func _initialize() -> void:
 	print("=====================================================")
 	print("🧪 RUNNING CAMPAIGN & MENU TEST SUITE")
 	print("=====================================================")
@@ -11,6 +15,8 @@ func _init() -> void:
 	var test1_ok = false
 	var test2_ok = false
 	var test3_ok = false
+	var test4_ok = false
+	MainMenuScript = load("res://src/ui/main_menu.gd")
 	
 	# TEST 1: Main Menu instantiation & button bindings
 	print("[TEST 1] Testing MainMenu scene and components...")
@@ -58,12 +64,32 @@ func _init() -> void:
 		test3_ok = true
 	gm.free()
 	
+	# TEST 4: Live GameManager autoload singleton is registered and receives level finishes
+	print("[TEST 4] Testing live GameManager autoload singleton...")
+	# _initialize runs before root enters the tree; wait one frame so the autoload's
+	# _enter_tree (which binds GameManager.instance) has run, as it has in the real game.
+	await process_frame
+	var live_gm = root.get_node_or_null("GameManager")
+	if live_gm and live_gm.get_script() == GameManagerScript and GameManagerScript.instance == live_gm:
+		print("  -> PASS: GameManager autoload is live at /root/GameManager and bound to GameManager.instance")
+		var lvl1 = (load("res://src/levels/level_01.tscn") as PackedScene).instantiate()
+		root.add_child(lvl1)
+		lvl1._on_worker_helmet_hit(58.0)
+		if is_equal_approx(live_gm.level_speeds[1], 58.0) and live_gm.current_level_index == 1:
+			print("  -> PASS: Level 01 finish recorded on live singleton: level_speeds[1]=", live_gm.level_speeds[1])
+			test4_ok = true
+		else:
+			print("  -> FAIL: Live singleton not updated by level finish: ", live_gm.level_speeds)
+		lvl1.free()
+	else:
+		print("  -> FAIL: GameManager autoload missing or GameManager.instance not bound (node=", live_gm, ", instance=", GameManagerScript.instance, ")")
+	
 	print("=====================================================")
-	if test1_ok and test2_ok and test3_ok:
+	if test1_ok and test2_ok and test3_ok and test4_ok:
 		print("✅ ALL CAMPAIGN & MENU TESTS PASSED CLEANLY!")
 		print("=====================================================")
 		quit(0)
 	else:
-		push_error("❌ SOME CAMPAIGN TESTS FAILED (T1:" + str(test1_ok) + " T2:" + str(test2_ok) + " T3:" + str(test3_ok) + ")")
+		push_error("❌ SOME CAMPAIGN TESTS FAILED (T1:" + str(test1_ok) + " T2:" + str(test2_ok) + " T3:" + str(test3_ok) + " T4:" + str(test4_ok) + ")")
 		print("=====================================================")
 		quit(1)

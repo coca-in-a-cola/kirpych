@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://lvl02_001"]
+[gd_scene load_steps=23 format=3 uid="uid://lvl02_001"]
 
 [ext_resource type="Script" path="res://src/levels/level_02.gd" id="1_lvl"]
 [ext_resource type="PackedScene" path="res://src/entities/brick/brick.tscn" id="2_brick"]
@@ -12,6 +12,8 @@
 [ext_resource type="PackedScene" path="res://assets/models/security_wall_high.glb" id="10_wall"]
 [ext_resource type="PackedScene" path="res://assets/models/building_unfinished.glb" id="11_bld"]
 [ext_resource type="Material" path="res://assets/materials/concrete_mat.tres" id="12_conc"]
+[ext_resource type="Script" path="res://src/entities/props/conveyor_belt.gd" id="13_convscript"]
+[ext_resource type="Material" path="res://assets/materials/tire_mat.tres" id="14_belt"]
 
 [sub_resource type="Environment" id="Environment_ind"]
 background_mode = 1
@@ -28,6 +30,16 @@ size = Vector3(14.0, 1.0, 26.0)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_floor3"]
 size = Vector3(14.0, 1.0, 30.0)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ramp_bed"]
+size = Vector3(5.0, 0.4, 12.649111)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ramp_bed"]
+material = ExtResource("14_belt")
+size = Vector3(5.0, 0.4, 12.649111)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ramp_drive"]
+size = Vector3(5.0, 0.6, 12.649111)
 
 [sub_resource type="BoxMesh" id="BoxMesh_floor"]
 material = ExtResource("12_conc")
@@ -76,6 +88,26 @@ shape = SubResource("BoxShape3D_floor2")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Floor2_Mezzanine"]
 mesh = SubResource("BoxMesh_floor")
 
+[node name="RampConveyor_F2toF3" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.9486833, 0.31622776, 0, -0.31622776, 0.9486833, 0, 14.360263, 59.063244)
+collision_layer = 2
+collision_mask = 5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RampConveyor_F2toF3"]
+shape = SubResource("BoxShape3D_ramp_bed")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RampConveyor_F2toF3"]
+mesh = SubResource("BoxMesh_ramp_bed")
+
+[node name="RampConveyor_F2toF3_Drive" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.9486833, 0.31622776, 0, -0.31622776, 0.9486833, 0, 14.360263, 59.063244)
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("13_convscript")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RampConveyor_F2toF3_Drive"]
+shape = SubResource("BoxShape3D_ramp_drive")
+
 [node name="Floor3_UpperBay" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16.05, 80)
 collision_layer = 2
@@ -92,7 +124,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16.55, 88)
 
 [node name="WorkerNPC" parent="." instance=ExtResource("4_worker")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16.55, 92)
-target_door_z = 120.0
+target_door_z = 93.5
 
 [node name="Brick" parent="." instance=ExtResource("2_brick")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, 0)

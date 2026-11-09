@@ -5,7 +5,9 @@ const CraneScript = preload("res://src/entities/props/pendulum_crane.gd")
 const CradleScript = preload("res://src/entities/props/cradle_finish.gd")
 const BrickScript = preload("res://src/entities/brick/brick.gd")
 
-func _init() -> void:
+# Runs in _initialize (not _init): autoloads such as GameManager are only added to the
+# tree and registered as global identifiers after the SceneTree script is constructed.
+func _initialize() -> void:
 	print("=====================================================")
 	print("🧪 RUNNING LEVEL 03 SUITE: 'ВЫСОТНЫЕ РАБОТЫ'")
 	print("=====================================================")

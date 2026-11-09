@@ -5,7 +5,9 @@ const LiftScript = preload("res://src/entities/props/moving_lift.gd")
 const DoorScript = preload("res://src/entities/props/metal_door.gd")
 const BrickScript = preload("res://src/entities/brick/brick.gd")
 
-func _init() -> void:
+# Runs in _initialize (not _init): autoloads such as GameManager are only added to the
+# tree and registered as global identifiers after the SceneTree script is constructed.
+func _initialize() -> void:
 	print("=====================================================")
 	print("🧪 RUNNING LEVEL 02 SUITE: 'НАРУШЕНИЕ ТБ'")
 	print("=====================================================")

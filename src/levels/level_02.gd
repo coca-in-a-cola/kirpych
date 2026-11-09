@@ -48,8 +48,7 @@ func _finish_level(speed_kmh: float) -> void:
 	if is_game_over:
 		return
 	is_game_over = true
-	if GameManager.instance:
-		GameManager.instance.record_level_finish(2, speed_kmh)
+	GameManager.record_level_finish(2, speed_kmh)
 	if hud:
 		hud.show_victory(speed_kmh, "res://src/levels/level_03.tscn")
 

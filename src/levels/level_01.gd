@@ -36,8 +36,7 @@ func _on_brick_speed_changed(speed_kmh: float) -> void:
 
 func _on_worker_helmet_hit(speed_kmh: float) -> void:
 	is_game_over = true
-	if GameManager.instance:
-		GameManager.instance.record_level_finish(1, speed_kmh)
+	GameManager.record_level_finish(1, speed_kmh)
 	if hud:
 		hud.show_victory(speed_kmh, "res://src/levels/level_02.tscn")
 

@@ -6,7 +6,9 @@ const InputScript = preload("res://src/scripts/input_controller.gd")
 const TireScript = preload("res://src/entities/props/bouncy_tire.gd")
 const AwningScript = preload("res://src/entities/props/awning_slide.gd")
 
-func _init() -> void:
+# Runs in _initialize (not _init): autoloads such as GameManager are only added to the
+# tree and registered as global identifiers after the SceneTree script is constructed.
+func _initialize() -> void:
 	print("=====================================================")
 	print("🧪 RUNNING HEADLESS SUITE: 'ДОГОНИ МЕНЯ, КИРПИЧ!'")
 	print("=====================================================")
