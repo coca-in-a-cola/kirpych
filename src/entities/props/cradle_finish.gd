@@ -21,10 +21,10 @@ func _on_helmet_hit(speed_kmh: float) -> void:
 	# Trigger slow motion effect (0.25x scale for dramatic comedic impact)
 	Engine.time_scale = 0.25
 	
-	# Restore normal speed after 0.8s real time
-	var tree: SceneTree = get_tree()
-	if tree:
-		var timer: SceneTreeTimer = tree.create_timer(0.20) # 0.20s in slowmo ~ 0.8s real
-		timer.timeout.connect(func(): Engine.time_scale = 1.0)
+	if is_inside_tree():
+		var tree: SceneTree = get_tree()
+		if tree:
+			var timer: SceneTreeTimer = tree.create_timer(0.20) # 0.20s in slowmo ~ 0.8s real
+			timer.timeout.connect(func(): Engine.time_scale = 1.0)
 	
 	campaign_completed.emit(speed_kmh)

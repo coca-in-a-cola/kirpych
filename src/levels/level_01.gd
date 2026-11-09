@@ -24,11 +24,9 @@ func _physics_process(_delta: float) -> void:
 	if not brick:
 		return
 	
-	# Fall bounds check (Getting Over It reset to start if dropped below kill plane)
 	if brick.global_position.y < -8.0:
 		_respawn_brick()
 	
-	# Restart input
 	if Input.is_action_just_pressed("restart"):
 		get_tree().reload_current_scene()
 
@@ -38,8 +36,10 @@ func _on_brick_speed_changed(speed_kmh: float) -> void:
 
 func _on_worker_helmet_hit(speed_kmh: float) -> void:
 	is_game_over = true
+	if GameManager.instance:
+		GameManager.instance.record_level_finish(1, speed_kmh)
 	if hud:
-		hud.show_victory(speed_kmh)
+		hud.show_victory(speed_kmh, "res://src/levels/level_02.tscn")
 
 func _respawn_brick() -> void:
 	brick.global_position = respawn_position
