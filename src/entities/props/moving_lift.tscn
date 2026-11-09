@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://lift001"]
+
+[ext_resource type="Script" path="res://src/entities/props/moving_lift.gd" id="1_lift"]
+[ext_resource type="Material" path="res://assets/materials/plywood_mat.tres" id="2_mat"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lift"]
+size = Vector3(6.0, 0.6, 6.0)
+
+[sub_resource type="BoxMesh" id="BoxMesh_lift"]
+material = ExtResource("2_mat")
+size = Vector3(6.0, 0.6, 6.0)
+
+[node name="MovingLift" type="AnimatableBody3D"]
+collision_layer = 2
+collision_mask = 5
+script = ExtResource("1_lift")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_lift")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_lift")

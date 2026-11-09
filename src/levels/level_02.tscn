@@ -1,0 +1,106 @@
+[gd_scene load_steps=15 format=3 uid="uid://lvl02_001"]
+
+[ext_resource type="Script" path="res://src/levels/level_02.gd" id="1_lvl"]
+[ext_resource type="PackedScene" path="res://src/entities/brick/brick.tscn" id="2_brick"]
+[ext_resource type="Script" path="res://src/camera/camera_rail.gd" id="3_cam"]
+[ext_resource type="PackedScene" path="res://src/entities/worker/worker_npc.tscn" id="4_worker"]
+[ext_resource type="PackedScene" path="res://src/ui/hud.tscn" id="5_hud"]
+[ext_resource type="PackedScene" path="res://src/entities/props/conveyor_belt.tscn" id="6_conv"]
+[ext_resource type="PackedScene" path="res://src/entities/props/moving_lift.tscn" id="7_lift"]
+[ext_resource type="PackedScene" path="res://src/entities/props/metal_door.tscn" id="8_door"]
+[ext_resource type="Material" path="res://assets/materials/concrete_mat.tres" id="9_conc"]
+[ext_resource type="Material" path="res://assets/materials/plywood_mat.tres" id="10_wood"]
+
+[sub_resource type="Environment" id="Environment_ind"]
+background_mode = 1
+background_color = Color(0.08, 0.10, 0.14, 1.0)
+ambient_light_source = 2
+ambient_light_color = Color(0.4, 0.45, 0.55, 1.0)
+tonemap_mode = 2
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_floor1"]
+size = Vector3(14.0, 1.0, 32.0)
+
+[sub_resource type="BoxMesh" id="BoxMesh_floor1"]
+material = ExtResource("9_conc")
+size = Vector3(14.0, 1.0, 32.0)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_floor2"]
+size = Vector3(14.0, 1.0, 26.0)
+
+[sub_resource type="BoxMesh" id="BoxMesh_floor2"]
+material = ExtResource("9_conc")
+size = Vector3(14.0, 1.0, 26.0)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_floor3"]
+size = Vector3(14.0, 1.0, 30.0)
+
+[sub_resource type="BoxMesh" id="BoxMesh_floor3"]
+material = ExtResource("9_conc")
+size = Vector3(14.0, 1.0, 30.0)
+
+[node name="Level02" type="Node3D"]
+script = ExtResource("1_lvl")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_ind")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.966, -0.183, 0.183, 0, 0.707, 0.707, -0.259, -0.683, 0.683, 0, 25, 40)
+light_color = Color(0.9, 0.92, 0.95, 1.0)
+shadow_enabled = true
+
+[node name="Floor1_LoadingBay" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 16)
+collision_layer = 2
+collision_mask = 5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor1_LoadingBay"]
+shape = SubResource("BoxShape3D_floor1")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor1_LoadingBay"]
+mesh = SubResource("BoxMesh_floor1")
+
+[node name="ConveyorBelt" parent="." instance=ExtResource("6_conv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 16)
+
+[node name="MovingLift" parent="." instance=ExtResource("7_lift")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 36)
+
+[node name="Floor2_Mezzanine" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12.0, 52)
+collision_layer = 2
+collision_mask = 5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor2_Mezzanine"]
+shape = SubResource("BoxShape3D_floor2")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor2_Mezzanine"]
+mesh = SubResource("BoxMesh_floor2")
+
+[node name="Floor3_UpperBay" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16.0, 80)
+collision_layer = 2
+collision_mask = 5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor3_UpperBay"]
+shape = SubResource("BoxShape3D_floor3")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor3_UpperBay"]
+mesh = SubResource("BoxMesh_floor3")
+
+[node name="MetalDoor" parent="." instance=ExtResource("8_door")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16.5, 88)
+
+[node name="WorkerNPC" parent="." instance=ExtResource("4_worker")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16.5, 92)
+target_door_z = 120.0
+
+[node name="Brick" parent="." instance=ExtResource("2_brick")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+
+[node name="CameraRail" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.966, 0.259, 0, -0.259, 0.966, 0, 3.5, -4.5)
+script = ExtResource("3_cam")
+
+[node name="GameHUD" parent="." instance=ExtResource("5_hud")]
