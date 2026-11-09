@@ -1,10 +1,36 @@
-[gd_scene load_steps=8 format=3 uid="uid://menu001"]
+[gd_scene load_steps=18 format=3 uid="uid://menu001"]
 
 [ext_resource type="Script" path="res://src/ui/main_menu.gd" id="1_menu"]
 [ext_resource type="FontFile" path="res://assets/fonts/russo_one_regular.ttf" id="2_font"]
+[ext_resource type="PackedScene" path="res://assets/models/brick_prop.glb" id="3_brick"]
+[ext_resource type="PackedScene" path="res://assets/models/platform_tile.glb" id="4_plat"]
+[ext_resource type="PackedScene" path="res://assets/models/construction_truck_yellow.glb" id="5_truck"]
+[ext_resource type="PackedScene" path="res://assets/models/building_site_office.glb" id="6_office"]
+[ext_resource type="PackedScene" path="res://assets/models/security_wall_high.glb" id="7_wall"]
+[ext_resource type="Material" path="res://assets/materials/concrete_mat.tres" id="8_conc"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sunset"]
+sky_top_color = Color(0.18, 0.28, 0.45, 1)
+sky_horizon_color = Color(0.85, 0.55, 0.25, 1)
+ground_bottom_color = Color(0.1, 0.12, 0.15, 1)
+ground_horizon_color = Color(0.4, 0.35, 0.3, 1)
+
+[sub_resource type="Sky" id="Sky_sunset"]
+sky_material = SubResource("ProceduralSkyMaterial_sunset")
+
+[sub_resource type="Environment" id="Environment_menu"]
+background_mode = 2
+sky = SubResource("Sky_sunset")
+ambient_light_source = 3
+ambient_light_color = Color(0.9, 0.8, 0.7, 1)
+tonemap_mode = 2
+
+[sub_resource type="BoxMesh" id="BoxMesh_ground"]
+material = ExtResource("8_conc")
+size = Vector3(40, 1, 40)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_normal"]
-bg_color = Color(0.047, 0.059, 0.09, 1)
+bg_color = Color(0.047, 0.059, 0.09, 0.9)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -52,7 +78,7 @@ corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
-bg_color = Color(0.08, 0.11, 0.16, 0.96)
+bg_color = Color(0.06, 0.08, 0.12, 0.95)
 border_width_left = 3
 border_width_top = 3
 border_width_right = 3
@@ -72,14 +98,59 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_menu")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.06, 0.08, 0.12, 1)
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(1280, 720)
+render_target_update_mode = 4
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="SubViewportContainer/SubViewport"]
+environment = SubResource("Environment_menu")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="SubViewportContainer/SubViewport"]
+transform = Transform3D(0.866, -0.354, 0.354, 0, 0.707, 0.707, -0.5, -0.612, 0.612, 0, 15, 0)
+light_color = Color(1, 0.9, 0.8, 1)
+shadow_enabled = true
+
+[node name="Camera3D" type="Camera3D" parent="SubViewportContainer/SubViewport"]
+transform = Transform3D(0.966, -0.067, 0.25, 0, 0.966, 0.259, -0.259, -0.25, 0.933, 1.2, 2.2, 3.8)
+fov = 60.0
+
+[node name="Ground" type="MeshInstance3D" parent="SubViewportContainer/SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+mesh = SubResource("BoxMesh_ground")
+
+[node name="Pedestal" parent="SubViewportContainer/SubViewport" instance=ExtResource("4_plat")]
+transform = Transform3D(1.5, 0, 0, 0, 0.8, 0, 0, 0, 1.5, 0, 0, 0)
+
+[node name="HeroBrick" parent="SubViewportContainer/SubViewport" instance=ExtResource("3_brick")]
+transform = Transform3D(0.866, 0.15, 0.477, 0, 0.954, -0.3, -0.5, 0.26, 0.826, 0, 0.75, 0)
+
+[node name="YellowTruck" parent="SubViewportContainer/SubViewport" instance=ExtResource("5_truck")]
+transform = Transform3D(-1.2, 0, -1.0, 0, 1.6, 0, 1.0, 0, -1.2, -6.5, 0, -4.5)
+
+[node name="SiteOffice" parent="SubViewportContainer/SubViewport" instance=ExtResource("6_office")]
+transform = Transform3D(2.2, 0, 0, 0, 2.2, 0, 0, 0, 2.2, 6.0, 0, -5.0)
+
+[node name="BackWall" parent="SubViewportContainer/SubViewport" instance=ExtResource("7_wall")]
+transform = Transform3D(3.0, 0, 0, 0, 1.5, 0, 0, 0, 1.0, 0, 0, -8.0)
+
+[node name="MenuVignette" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.04, 0.06, 0.1, 0.45)
 
 [node name="TitleLabel" type="Label" parent="."]
 layout_mode = 1
@@ -87,12 +158,12 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -400.0
-offset_top = 70.0
+offset_top = 55.0
 offset_right = 400.0
-offset_bottom = 140.0
+offset_bottom = 125.0
 grow_horizontal = 2
-theme_override_colors/font_color = Color(0.94, 0.35, 0.08, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_colors/font_color = Color(0.96, 0.62, 0.04, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.9)
 theme_override_constants/shadow_offset_x = 4
 theme_override_constants/shadow_offset_y = 4
 theme_override_fonts/font = ExtResource("2_font")
@@ -250,6 +321,12 @@ layout_mode = 2
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 18
 text = "[ R ]  ➔  Быстрый рестарт уровня"
+
+[node name="Row4" type="Label" parent="ControlsDialog/VBoxKeys"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+text = "[ ESC ]  ➔  Пауза и меню"
 
 [node name="Hint" type="Label" parent="ControlsDialog/VBoxKeys"]
 layout_mode = 2

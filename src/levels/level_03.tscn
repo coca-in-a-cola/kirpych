@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://lvl03_001"]
+[gd_scene load_steps=22 format=3 uid="uid://lvl03_001"]
 
 [ext_resource type="Script" path="res://src/levels/level_03.gd" id="1_lvl"]
 [ext_resource type="PackedScene" path="res://src/entities/brick/brick.tscn" id="2_brick"]
@@ -11,6 +11,8 @@
 [ext_resource type="Material" path="res://assets/materials/concrete_mat.tres" id="9_conc"]
 [ext_resource type="Material" path="res://assets/materials/tire_mat.tres" id="10_metal"]
 [ext_resource type="Material" path="res://assets/materials/plywood_mat.tres" id="11_wood"]
+[ext_resource type="PackedScene" path="res://assets/models/concrete_barrier_low.glb" id="12_barrier"]
+[ext_resource type="PackedScene" path="res://assets/models/concrete_slab.glb" id="13_slab"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sunset"]
 sky_top_color = Color(0.2, 0.12, 0.35, 1)
@@ -67,8 +69,28 @@ transform = Transform3D(0.707, -0.353, 0.612, 0, 0.866, 0.5, -0.707, -0.353, 0.6
 light_color = Color(1, 0.75, 0.55, 1)
 shadow_enabled = true
 
-[node name="BuildingBelow" parent="." instance=ExtResource("8_bld")]
-transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 40)
+[node name="BuildingBelow" type="Node3D" parent="."]
+
+[node name="MainRoofTower" parent="BuildingBelow" instance=ExtResource("8_bld")]
+transform = Transform3D(13, 0, 0, 0, 16.63, 0, 0, 0, 25, 0, 0, 10)
+
+[node name="TowerWestWing" parent="BuildingBelow" instance=ExtResource("8_bld")]
+transform = Transform3D(5, 0, 0, 0, 15, 0, 0, 0, 22, -9, 0, 10)
+
+[node name="TowerEastWing" parent="BuildingBelow" instance=ExtResource("8_bld")]
+transform = Transform3D(5, 0, 0, 0, 15, 0, 0, 0, 22, 9, 0, 10)
+
+[node name="MidBeamTower" parent="BuildingBelow" instance=ExtResource("8_bld")]
+transform = Transform3D(10, 0, 0, 0, 16.63, 0, 0, 0, 24, 0, 0, 35)
+
+[node name="CranePlatformTower" parent="BuildingBelow" instance=ExtResource("8_bld")]
+transform = Transform3D(12, 0, 0, 0, 18, 0, 0, 0, 32, 0, 0, 68)
+
+[node name="CradleFinishTower" parent="BuildingBelow" instance=ExtResource("8_bld")]
+transform = Transform3D(14, 0, 0, 0, 15.5, 0, 0, 0, 20, 0, 0, 102)
+
+[node name="DeepBaseFoundation" parent="BuildingBelow" instance=ExtResource("8_bld")]
+transform = Transform3D(30, 0, 0, 0, 4, 0, 0, 0, 120, 0, -5, 55)
 
 [node name="RoofPlatform" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 27.55, 10)
@@ -80,6 +102,115 @@ shape = SubResource("BoxShape3D_roof")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="RoofPlatform"]
 mesh = SubResource("BoxMesh_roof")
+
+[node name="RoofSafetyParapets" type="Node3D" parent="."]
+
+[node name="Parapet_Back_1" parent="RoofSafetyParapets" instance=ExtResource("12_barrier")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.4, 28.05, -1.7)
+
+[node name="Parapet_Back_2" parent="RoofSafetyParapets" instance=ExtResource("12_barrier")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.2, 28.05, -1.7)
+
+[node name="Parapet_Back_3" parent="RoofSafetyParapets" instance=ExtResource("12_barrier")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 28.05, -1.7)
+
+[node name="Parapet_Back_4" parent="RoofSafetyParapets" instance=ExtResource("12_barrier")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.2, 28.05, -1.7)
+
+[node name="Parapet_Back_5" parent="RoofSafetyParapets" instance=ExtResource("12_barrier")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.4, 28.05, -1.7)
+
+[node name="Parapet_Left_1" parent="RoofSafetyParapets" instance=ExtResource("12_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -5.7, 28.05, -0.5)
+
+[node name="Parapet_Left_2" parent="RoofSafetyParapets" instance=ExtResource("12_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -5.7, 28.05, 1.7)
+
+[node name="Parapet_Left_3" parent="RoofSafetyParapets" instance=ExtResource("12_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -5.7, 28.05, 3.9)
+
+[node name="Parapet_Left_4" parent="RoofSafetyParapets" instance=ExtResource("12_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -5.7, 28.05, 6.1)
+
+[node name="Parapet_Left_5" parent="RoofSafetyParapets" instance=ExtResource("12_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -5.7, 28.05, 8.3)
+
+[node name="Parapet_Left_6" parent="RoofSafetyParapets" instance=ExtResource("12_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -5.7, 28.05, 10.5)
+
+[node name="Parapet_Left_7" parent="RoofSafetyParapets" instance=ExtResource("12_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -5.7, 28.05, 12.7)
+
+[node name="Parapet_Left_8" parent="RoofSafetyParapets" instance=ExtResource("12_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -5.7, 28.05, 14.9)
+
+[node name="Parapet_Left_9" parent="RoofSafetyParapets" instance=ExtResource("12_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -5.7, 28.05, 17.1)
+
+[node name="Parapet_Left_10" parent="RoofSafetyParapets" instance=ExtResource("12_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -5.7, 28.05, 19.3)
+
+[node name="Parapet_Left_11" parent="RoofSafetyParapets" instance=ExtResource("12_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -5.7, 28.05, 21.5)
+
+[node name="Parapet_Right_1" parent="RoofSafetyParapets" instance=ExtResource("12_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 5.7, 28.05, -0.5)
+
+[node name="Parapet_Right_2" parent="RoofSafetyParapets" instance=ExtResource("12_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 5.7, 28.05, 1.7)
+
+[node name="Parapet_Right_3" parent="RoofSafetyParapets" instance=ExtResource("12_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 5.7, 28.05, 3.9)
+
+[node name="Parapet_Right_4" parent="RoofSafetyParapets" instance=ExtResource("12_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 5.7, 28.05, 6.1)
+
+[node name="Parapet_Right_5" parent="RoofSafetyParapets" instance=ExtResource("12_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 5.7, 28.05, 8.3)
+
+[node name="Parapet_Right_6" parent="RoofSafetyParapets" instance=ExtResource("12_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 5.7, 28.05, 10.5)
+
+[node name="Parapet_Right_7" parent="RoofSafetyParapets" instance=ExtResource("12_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 5.7, 28.05, 12.7)
+
+[node name="Parapet_Right_8" parent="RoofSafetyParapets" instance=ExtResource("12_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 5.7, 28.05, 14.9)
+
+[node name="Parapet_Right_9" parent="RoofSafetyParapets" instance=ExtResource("12_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 5.7, 28.05, 17.1)
+
+[node name="Parapet_Right_10" parent="RoofSafetyParapets" instance=ExtResource("12_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 5.7, 28.05, 19.3)
+
+[node name="Parapet_Right_11" parent="RoofSafetyParapets" instance=ExtResource("12_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 5.7, 28.05, 21.5)
+
+[node name="Parapet_Front_L1" parent="RoofSafetyParapets" instance=ExtResource("12_barrier")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.4, 28.05, 21.7)
+
+[node name="Parapet_Front_L2" parent="RoofSafetyParapets" instance=ExtResource("12_barrier")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.2, 28.05, 21.7)
+
+[node name="Parapet_Front_R1" parent="RoofSafetyParapets" instance=ExtResource("12_barrier")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.2, 28.05, 21.7)
+
+[node name="Parapet_Front_R2" parent="RoofSafetyParapets" instance=ExtResource("12_barrier")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.4, 28.05, 21.7)
+
+[node name="RooftopStaging" type="Node3D" parent="."]
+
+[node name="SlabStack1" parent="RooftopStaging" instance=ExtResource("13_slab")]
+transform = Transform3D(2.5, 0, 0, 0, 2, 0, 0, 0, 2.5, -4.5, 28.05, 1.0)
+
+[node name="SlabStack2" parent="RooftopStaging" instance=ExtResource("13_slab")]
+transform = Transform3D(2.5, 0, 0, 0, 2, 0, 0, 0, 2.5, 4.5, 28.05, 1.0)
+
+[node name="SlabStack3" parent="RooftopStaging" instance=ExtResource("13_slab")]
+transform = Transform3D(2.5, 0, 0, 0, 2, 0, 0, 0, 2.5, -4.5, 28.05, 16.0)
+
+[node name="SlabStack4" parent="RooftopStaging" instance=ExtResource("13_slab")]
+transform = Transform3D(2.5, 0, 0, 0, 2, 0, 0, 0, 2.5, 4.5, 28.05, 16.0)
 
 [node name="NarrowBeam" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 27.5, 28)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://lvl02_001"]
+[gd_scene load_steps=34 format=3 uid="uid://lvl02_001"]
 
 [ext_resource type="Script" path="res://src/levels/level_02.gd" id="1_lvl"]
 [ext_resource type="PackedScene" path="res://src/entities/brick/brick.tscn" id="2_brick"]
@@ -14,6 +14,8 @@
 [ext_resource type="Material" path="res://assets/materials/concrete_mat.tres" id="12_conc"]
 [ext_resource type="Script" path="res://src/entities/props/conveyor_belt.gd" id="13_convscript"]
 [ext_resource type="Material" path="res://assets/materials/tire_mat.tres" id="14_belt"]
+[ext_resource type="PackedScene" path="res://assets/models/concrete_barrier_low.glb" id="15_barrier"]
+[ext_resource type="PackedScene" path="res://assets/models/concrete_slab.glb" id="16_slab"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_overcast"]
 sky_top_color = Color(0.3, 0.34, 0.4, 1)
@@ -91,12 +93,49 @@ environment = SubResource("Environment_ind")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.966, -0.183, 0.183, 0, 0.707, 0.707, -0.259, -0.683, 0.683, 0, 25, 40)
-light_color = Color(1.0, 0.95, 0.85, 1)
-light_energy = 1.0
+light_color = Color(1, 0.95, 0.85, 1)
 shadow_enabled = true
 
-[node name="BuildingFramework" parent="." instance=ExtResource("11_bld")]
-transform = Transform3D(3.5, 0, 0, 0, 3.5, 0, 0, 0, 4.5, 0, 0, 45)
+[node name="BuildingStructure" type="Node3D" parent="."]
+
+[node name="FrameF1_Left1" parent="BuildingStructure" instance=ExtResource("11_bld")]
+transform = Transform3D(3, 0, 0, 0, 8, 0, 0, 0, 16, -8, 0, 8)
+
+[node name="FrameF1_Left2" parent="BuildingStructure" instance=ExtResource("11_bld")]
+transform = Transform3D(3, 0, 0, 0, 8, 0, 0, 0, 16, -8, 0, 24)
+
+[node name="FrameF1_Right1" parent="BuildingStructure" instance=ExtResource("11_bld")]
+transform = Transform3D(3, 0, 0, 0, 8, 0, 0, 0, 16, 8, 0, 8)
+
+[node name="FrameF1_Right2" parent="BuildingStructure" instance=ExtResource("11_bld")]
+transform = Transform3D(3, 0, 0, 0, 8, 0, 0, 0, 16, 8, 0, 24)
+
+[node name="FrameF1_Back" parent="BuildingStructure" instance=ExtResource("11_bld")]
+transform = Transform3D(16, 0, 0, 0, 8, 0, 0, 0, 3, 0, 0, -1.5)
+
+[node name="FrameShaft_Left" parent="BuildingStructure" instance=ExtResource("11_bld")]
+transform = Transform3D(3, 0, 0, 0, 12, 0, 0, 0, 8, -8, 0, 36)
+
+[node name="FrameShaft_Right" parent="BuildingStructure" instance=ExtResource("11_bld")]
+transform = Transform3D(3, 0, 0, 0, 12, 0, 0, 0, 8, 8, 0, 36)
+
+[node name="FrameF2_Left" parent="BuildingStructure" instance=ExtResource("11_bld")]
+transform = Transform3D(3, 0, 0, 0, 7.5, 0, 0, 0, 26, -8, 12, 52)
+
+[node name="FrameF2_Right" parent="BuildingStructure" instance=ExtResource("11_bld")]
+transform = Transform3D(3, 0, 0, 0, 7.5, 0, 0, 0, 26, 8, 12, 52)
+
+[node name="FrameF3_Left" parent="BuildingStructure" instance=ExtResource("11_bld")]
+transform = Transform3D(3, 0, 0, 0, 6, 0, 0, 0, 30, -8, 16, 80)
+
+[node name="FrameF3_Right" parent="BuildingStructure" instance=ExtResource("11_bld")]
+transform = Transform3D(3, 0, 0, 0, 6, 0, 0, 0, 30, 8, 16, 80)
+
+[node name="FrameF3_Back" parent="BuildingStructure" instance=ExtResource("11_bld")]
+transform = Transform3D(16, 0, 0, 0, 6, 0, 0, 0, 3, 0, 16, 96)
+
+[node name="BaseFoundation" parent="BuildingStructure" instance=ExtResource("11_bld")]
+transform = Transform3D(18, 0, 0, 0, 1, 0, 0, 0, 50, 0, -2, 45)
 
 [node name="Floor1_LoadingBay" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 16.5)
@@ -147,7 +186,7 @@ shape = SubResource("BoxShape3D_floor2")
 mesh = SubResource("BoxMesh_floor2")
 
 [node name="RampConveyor_F2toF3" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.9465516, 0.32255231, 0, -0.32255231, 0.9465516, 0, 14.400690, 59.051029)
+transform = Transform3D(1, 0, 0, 0, 0.946552, 0.322552, 0, -0.322552, 0.946552, 0, 14.4007, 59.051)
 collision_layer = 2
 collision_mask = 5
 
@@ -158,7 +197,7 @@ shape = SubResource("BoxShape3D_ramp_bed")
 mesh = SubResource("BoxMesh_ramp_bed")
 
 [node name="RampConveyor_F2toF3_Drive" type="Area3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.9465516, 0.32255231, 0, -0.32255231, 0.9465516, 0, 14.400690, 59.051029)
+transform = Transform3D(1, 0, 0, 0, 0.946552, 0.322552, 0, -0.322552, 0.946552, 0, 14.4007, 59.051)
 collision_layer = 2
 collision_mask = 1
 script = ExtResource("13_convscript")
@@ -177,6 +216,106 @@ shape = SubResource("BoxShape3D_floor3")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Floor3_UpperBay"]
 mesh = SubResource("BoxMesh_floor3")
 
+[node name="DropSafetyBarriers" type="Node3D" parent="."]
+
+[node name="Barrier_F1_Drop_L1" parent="DropSafetyBarriers" instance=ExtResource("15_barrier")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.5, 0, 32.8)
+
+[node name="Barrier_F1_Drop_L2" parent="DropSafetyBarriers" instance=ExtResource("15_barrier")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 0, 32.8)
+
+[node name="Barrier_F1_Drop_R1" parent="DropSafetyBarriers" instance=ExtResource("15_barrier")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0, 32.8)
+
+[node name="Barrier_F1_Drop_R2" parent="DropSafetyBarriers" instance=ExtResource("15_barrier")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 0, 32.8)
+
+[node name="Barrier_F2_Drop_L1" parent="DropSafetyBarriers" instance=ExtResource("15_barrier")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.5, 12.55, 39.4)
+
+[node name="Barrier_F2_Drop_L2" parent="DropSafetyBarriers" instance=ExtResource("15_barrier")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 12.55, 39.4)
+
+[node name="Barrier_F2_Drop_R1" parent="DropSafetyBarriers" instance=ExtResource("15_barrier")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 12.55, 39.4)
+
+[node name="Barrier_F2_Drop_R2" parent="DropSafetyBarriers" instance=ExtResource("15_barrier")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 12.55, 39.4)
+
+[node name="Barrier_F2_Side_L1" parent="DropSafetyBarriers" instance=ExtResource("15_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -6.8, 12.55, 42.0)
+
+[node name="Barrier_F2_Side_L2" parent="DropSafetyBarriers" instance=ExtResource("15_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -6.8, 12.55, 45.0)
+
+[node name="Barrier_F2_Side_L3" parent="DropSafetyBarriers" instance=ExtResource("15_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -6.8, 12.55, 48.0)
+
+[node name="Barrier_F2_Side_L4" parent="DropSafetyBarriers" instance=ExtResource("15_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -6.8, 12.55, 51.0)
+
+[node name="Barrier_F2_Side_R1" parent="DropSafetyBarriers" instance=ExtResource("15_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 6.8, 12.55, 42.0)
+
+[node name="Barrier_F2_Side_R2" parent="DropSafetyBarriers" instance=ExtResource("15_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 6.8, 12.55, 45.0)
+
+[node name="Barrier_F2_Side_R3" parent="DropSafetyBarriers" instance=ExtResource("15_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 6.8, 12.55, 48.0)
+
+[node name="Barrier_F2_Side_R4" parent="DropSafetyBarriers" instance=ExtResource("15_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 6.8, 12.55, 51.0)
+
+[node name="Barrier_F3_Side_L1" parent="DropSafetyBarriers" instance=ExtResource("15_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -6.8, 16.55, 68.0)
+
+[node name="Barrier_F3_Side_L2" parent="DropSafetyBarriers" instance=ExtResource("15_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -6.8, 16.55, 72.0)
+
+[node name="Barrier_F3_Side_L3" parent="DropSafetyBarriers" instance=ExtResource("15_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -6.8, 16.55, 76.0)
+
+[node name="Barrier_F3_Side_L4" parent="DropSafetyBarriers" instance=ExtResource("15_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -6.8, 16.55, 80.0)
+
+[node name="Barrier_F3_Side_L5" parent="DropSafetyBarriers" instance=ExtResource("15_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -6.8, 16.55, 84.0)
+
+[node name="Barrier_F3_Side_R1" parent="DropSafetyBarriers" instance=ExtResource("15_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 6.8, 16.55, 68.0)
+
+[node name="Barrier_F3_Side_R2" parent="DropSafetyBarriers" instance=ExtResource("15_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 6.8, 16.55, 72.0)
+
+[node name="Barrier_F3_Side_R3" parent="DropSafetyBarriers" instance=ExtResource("15_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 6.8, 16.55, 76.0)
+
+[node name="Barrier_F3_Side_R4" parent="DropSafetyBarriers" instance=ExtResource("15_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 6.8, 16.55, 80.0)
+
+[node name="Barrier_F3_Side_R5" parent="DropSafetyBarriers" instance=ExtResource("15_barrier")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 6.8, 16.55, 84.0)
+
+[node name="WarningStagingProps" type="Node3D" parent="."]
+
+[node name="SlabStack_F1_L" parent="WarningStagingProps" instance=ExtResource("16_slab")]
+transform = Transform3D(3, 0, 0, 0, 2, 0, 0, 0, 3, -5.2, 0, 12.0)
+
+[node name="SlabStack_F1_R" parent="WarningStagingProps" instance=ExtResource("16_slab")]
+transform = Transform3D(3, 0, 0, 0, 2, 0, 0, 0, 3, 5.2, 0, 22.0)
+
+[node name="SlabStack_F2_L" parent="WarningStagingProps" instance=ExtResource("16_slab")]
+transform = Transform3D(2.5, 0, 0, 0, 2, 0, 0, 0, 2.5, -5.2, 12.55, 45.0)
+
+[node name="SlabStack_F2_R" parent="WarningStagingProps" instance=ExtResource("16_slab")]
+transform = Transform3D(2.5, 0, 0, 0, 2, 0, 0, 0, 2.5, 5.2, 12.55, 49.0)
+
+[node name="SlabStack_F3_L" parent="WarningStagingProps" instance=ExtResource("16_slab")]
+transform = Transform3D(2.5, 0, 0, 0, 2, 0, 0, 0, 2.5, -5.2, 16.55, 72.0)
+
+[node name="SlabStack_F3_R" parent="WarningStagingProps" instance=ExtResource("16_slab")]
+transform = Transform3D(2.5, 0, 0, 0, 2, 0, 0, 0, 2.5, 5.2, 16.55, 78.0)
+
 [node name="MetalDoor" parent="." instance=ExtResource("8_door")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16.55, 88)
 
@@ -185,7 +324,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16.55, 92)
 target_door_z = 93.5
 
 [node name="Brick" parent="." instance=ExtResource("2_brick")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25,5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, 5)
 
 [node name="CameraRailPath" type="Path3D" parent="."]
 curve = SubResource("Curve3D_camrail")
