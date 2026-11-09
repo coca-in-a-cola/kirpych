@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://lvl01_001"]
+[gd_scene load_steps=22 format=3 uid="uid://lvl01_001"]
 
 [ext_resource type="Script" path="res://src/levels/level_01.gd" id="1_lvl"]
 [ext_resource type="PackedScene" path="res://src/entities/brick/brick.tscn" id="2_brick"]
@@ -7,54 +7,57 @@
 [ext_resource type="PackedScene" path="res://src/ui/hud.tscn" id="5_hud"]
 [ext_resource type="PackedScene" path="res://src/entities/props/bouncy_tire.tscn" id="6_tire"]
 [ext_resource type="PackedScene" path="res://src/entities/props/awning_slide.tscn" id="7_awning"]
-[ext_resource type="Material" path="res://assets/materials/concrete_mat.tres" id="8_conc"]
-[ext_resource type="Material" path="res://assets/materials/plywood_mat.tres" id="9_wood"]
+[ext_resource type="PackedScene" path="res://assets/models/platform_large.glb" id="8_plat"]
+[ext_resource type="PackedScene" path="res://assets/models/construction_truck_yellow.glb" id="9_truck_y"]
+[ext_resource type="PackedScene" path="res://assets/models/construction_truck_red.glb" id="10_truck_r"]
+[ext_resource type="PackedScene" path="res://assets/models/building_site_office.glb" id="11_office"]
+[ext_resource type="PackedScene" path="res://assets/models/security_wall_high.glb" id="12_wall"]
+[ext_resource type="PackedScene" path="res://assets/models/concrete_barrier_low.glb" id="13_barrier"]
+[ext_resource type="Material" path="res://assets/materials/concrete_mat.tres" id="14_conc"]
+[ext_resource type="Material" path="res://assets/materials/plywood_mat.tres" id="15_wood"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
-sky_top_color = Color(0.38, 0.65, 0.95, 1.0)
-sky_horizon_color = Color(0.72, 0.82, 0.92, 1.0)
-ground_bottom_color = Color(0.25, 0.22, 0.18, 1.0)
-ground_horizon_color = Color(0.65, 0.62, 0.58, 1.0)
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_day"]
+sky_top_color = Color(0.28, 0.58, 0.92, 1)
+sky_horizon_color = Color(0.72, 0.82, 0.92, 1)
+ground_bottom_color = Color(0.2, 0.18, 0.16, 1)
+ground_horizon_color = Color(0.65, 0.62, 0.58, 1)
 
-[sub_resource type="Sky" id="Sky_sky"]
-sky_material = SubResource("ProceduralSkyMaterial_sky")
+[sub_resource type="Sky" id="Sky_day"]
+sky_material = SubResource("ProceduralSkyMaterial_day")
 
-[sub_resource type="Environment" id="Environment_env"]
+[sub_resource type="Environment" id="Environment_day"]
 background_mode = 2
-sky = SubResource("Sky_sky")
+sky = SubResource("Sky_day")
 ambient_light_source = 3
-ambient_light_color = Color(0.9, 0.88, 0.82, 1.0)
+ambient_light_color = Color(0.92, 0.9, 0.84, 1)
 tonemap_mode = 2
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
-size = Vector3(20.0, 1.0, 130.0)
+size = Vector3(24.0, 1.0, 130.0)
 
 [sub_resource type="BoxMesh" id="BoxMesh_ground"]
-material = ExtResource("8_conc")
-size = Vector3(20.0, 1.0, 130.0)
+material = ExtResource("14_conc")
+size = Vector3(24.0, 1.0, 130.0)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_scaffold"]
-size = Vector3(6.0, 1.0, 10.0)
-
-[sub_resource type="BoxMesh" id="BoxMesh_scaffold"]
-material = ExtResource("9_wood")
-size = Vector3(6.0, 1.0, 10.0)
+size = Vector3(6.2, 1.0, 10.0)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ramp"]
 size = Vector3(6.0, 0.4, 20.0)
 
 [sub_resource type="BoxMesh" id="BoxMesh_ramp"]
-material = ExtResource("9_wood")
+material = ExtResource("15_wood")
 size = Vector3(6.0, 0.4, 20.0)
 
 [node name="Level01" type="Node3D"]
 script = ExtResource("1_lvl")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_env")
+environment = SubResource("Environment_day")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(0.866, -0.353, 0.353, 0, 0.707, 0.707, -0.5, -0.612, 0.612, 0, 20, 0)
+transform = Transform3D(0.866, -0.353, 0.353, 0, 0.707, 0.707, -0.5, -0.612, 0.612, 0, 25, 0)
+light_color = Color(1, 0.96, 0.9, 1)
 shadow_enabled = true
 
 [node name="YardGround" type="StaticBody3D" parent="."]
@@ -76,8 +79,8 @@ collision_mask = 5
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StartScaffold"]
 shape = SubResource("BoxShape3D_scaffold")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="StartScaffold"]
-mesh = SubResource("BoxMesh_scaffold")
+[node name="PlatformMesh" parent="StartScaffold" instance=ExtResource("8_plat")]
+transform = Transform3D(3.1, 0, 0, 0, 1, 0, 0, 0, 2.5, 0, 0, 0)
 
 [node name="DownhillRamp" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.927, 0.374, 0, -0.374, 0.927, 0, 5.8, 14)
@@ -91,13 +94,38 @@ shape = SubResource("BoxShape3D_ramp")
 mesh = SubResource("BoxMesh_ramp")
 
 [node name="BouncyTire" parent="." instance=ExtResource("6_tire")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 34)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.32, 34)
 
 [node name="AwningSlide" parent="." instance=ExtResource("7_awning")]
-transform = Transform3D(1, 0, 0, 0, 0.985, 0.174, 0, -0.174, 0.985, 0, 1.2, 54)
+transform = Transform3D(1, 0, 0, 0, 0.985, 0.174, 0, -0.174, 0.985, 0, 1.25, 54)
+
+[node name="PerimeterWalls" type="Node3D" parent="."]
+
+[node name="WallLeft1" parent="PerimeterWalls" instance=ExtResource("12_wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 2.5, -11.5, 0, 30)
+
+[node name="WallLeft2" parent="PerimeterWalls" instance=ExtResource("12_wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 2.5, -11.5, 0, 75)
+
+[node name="WallRight1" parent="PerimeterWalls" instance=ExtResource("12_wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 2.5, 11.5, 0, 30)
+
+[node name="WallRight2" parent="PerimeterWalls" instance=ExtResource("12_wall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 2.5, 11.5, 0, 75)
+
+[node name="ConstructionVehicles" type="Node3D" parent="."]
+
+[node name="YellowTruck" parent="ConstructionVehicles" instance=ExtResource("9_truck_y")]
+transform = Transform3D(1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, -7.5, 0, 42)
+
+[node name="RedTruck" parent="ConstructionVehicles" instance=ExtResource("10_truck_r")]
+transform = Transform3D(1.2, 0, 0.7, 0, 1.4, 0, -0.7, 0, 1.2, 7.5, 0, 68)
+
+[node name="SiteOfficeBuilding" parent="." instance=ExtResource("11_office")]
+transform = Transform3D(2.5, 0, 0, 0, 2.5, 0, 0, 0, 2.5, 0, 0, 118)
 
 [node name="Brick" parent="." instance=ExtResource("2_brick")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12.5, -2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12.6, -2)
 
 [node name="CameraRail" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.966, 0.259, 0, -0.259, 0.966, 0, 14.8, -6.8)

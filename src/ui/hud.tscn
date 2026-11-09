@@ -1,25 +1,53 @@
-[gd_scene load_steps=2 format=3 uid="uid://hud001"]
+[gd_scene load_steps=5 format=3 uid="uid://hud001"]
 
 [ext_resource type="Script" path="res://src/ui/hud.gd" id="1_hud"]
+[ext_resource type="FontFile" path="res://assets/fonts/lilita_one_regular.ttf" id="2_font"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_speed_bg"]
+bg_color = Color(0.08, 0.11, 0.16, 0.85)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.96, 0.62, 0.04, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_victory_bg"]
+bg_color = Color(0.08, 0.11, 0.16, 0.95)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.94, 0.35, 0.08, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
 
 [node name="GameHUD" type="CanvasLayer"]
 script = ExtResource("1_hud")
 
-[node name="SpeedContainer" type="MarginContainer" parent="."]
+[node name="SpeedContainer" type="PanelContainer" parent="."]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -150.0
-offset_top = 24.0
-offset_right = 150.0
-offset_bottom = 84.0
+offset_left = -110.0
+offset_top = 20.0
+offset_right = 110.0
+offset_bottom = 74.0
 grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_speed_bg")
 
 [node name="SpeedLabel" type="Label" parent="SpeedContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 36
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 32
 text = "0.0 КМ/Ч"
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="VictoryPanel" type="Panel" parent="."]
 visible = false
@@ -34,6 +62,7 @@ offset_right = 320.0
 offset_bottom = 180.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_victory_bg")
 
 [node name="TitleLabel" type="Label" parent="VictoryPanel"]
 layout_mode = 1
@@ -45,7 +74,9 @@ offset_top = 20.0
 offset_right = 250.0
 offset_bottom = 60.0
 grow_horizontal = 2
-theme_override_font_sizes/font_size = 26
+theme_override_colors/font_color = Color(0.96, 0.62, 0.04, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 28
 text = "💥 БАМ! КАСКА ПРОБИТА!"
 horizontal_alignment = 1
 
@@ -62,7 +93,8 @@ offset_right = 250.0
 offset_bottom = -5.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 22
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 24
 text = "СКОРОСТЬ УДАРА: 00.0 КМ/Ч"
 horizontal_alignment = 1
 
@@ -79,7 +111,8 @@ offset_right = 250.0
 offset_bottom = 40.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 20
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 22
 text = "РАНГ: A"
 horizontal_alignment = 1
 
@@ -100,13 +133,17 @@ theme_override_constants/separation = 16
 alignment = 1
 
 [node name="BtnNextLevel" type="Button" parent="VictoryPanel/HBoxButtons"]
-custom_minimum_size = Vector2(160, 40)
+custom_minimum_size = Vector2(170, 42)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 17
 text = "СЛЕДУЮЩИЙ ЭТАП ➔"
 
 [node name="BtnMenu" type="Button" parent="VictoryPanel/HBoxButtons"]
-custom_minimum_size = Vector2(140, 40)
+custom_minimum_size = Vector2(140, 42)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 17
 text = "ГЛАВНОЕ МЕНЮ"
 
 [node name="RestartHint" type="Label" parent="VictoryPanel"]
@@ -122,6 +159,7 @@ offset_right = 250.0
 offset_bottom = -10.0
 grow_horizontal = 2
 grow_vertical = 0
+theme_override_colors/font_color = Color(0.7, 0.75, 0.85, 1)
 theme_override_font_sizes/font_size = 13
 text = "Нажмите [R] чтобы повторить забег"
 horizontal_alignment = 1

@@ -1,6 +1,43 @@
-[gd_scene load_steps=2 format=3 uid="uid://menu001"]
+[gd_scene load_steps=7 format=3 uid="uid://menu001"]
 
 [ext_resource type="Script" path="res://src/ui/main_menu.gd" id="1_menu"]
+[ext_resource type="FontFile" path="res://assets/fonts/lilita_one_regular.ttf" id="2_font"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_normal"]
+bg_color = Color(0.12, 0.16, 0.22, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.96, 0.62, 0.04, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_hover"]
+bg_color = Color(0.92, 0.35, 0.05, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.8, 0.2, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.08, 0.11, 0.16, 0.96)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.96, 0.62, 0.04, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -18,82 +55,99 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.1, 0.12, 0.16, 1)
+color = Color(0.06, 0.08, 0.12, 1)
 
-[node name="HeaderContainer" type="VBoxContainer" parent="."]
+[node name="TitleLabel" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -350.0
-offset_top = 60.0
-offset_right = 350.0
-offset_bottom = 180.0
+offset_left = -400.0
+offset_top = 70.0
+offset_right = 400.0
+offset_bottom = 140.0
 grow_horizontal = 2
-
-[node name="TitleLabel" type="Label" parent="HeaderContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.95, 0.35, 0.15, 1)
-theme_override_font_sizes/font_size = 46
+theme_override_colors/font_color = Color(0.94, 0.35, 0.08, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 52
 text = "ДОГОНИ МЕНЯ, КИРПИЧ!"
 horizontal_alignment = 1
 
-[node name="SubtitleLabel" type="Label" parent="HeaderContainer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.95, 0.75, 0.1, 1)
-theme_override_font_sizes/font_size = 18
-text = "Комедийный хардкорный 3D physics-платформер"
-horizontal_alignment = 1
-
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="ContentContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = -40.0
-offset_right = 200.0
+offset_left = -220.0
+offset_top = -60.0
+offset_right = 220.0
 offset_bottom = 220.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 16
+theme_override_constants/separation = 14
 
-[node name="BtnPlay" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 52)
+[node name="BtnPlay" type="Button" parent="ContentContainer"]
+custom_minimum_size = Vector2(0, 56)
 layout_mode = 2
-theme_override_font_sizes/font_size = 22
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
 text = "▶ НАЧАТЬ КАМПАНИЮ"
 
-[node name="HBoxLevels" type="HBoxContainer" parent="VBoxContainer"]
+[node name="HBoxLevels" type="HBoxContainer" parent="ContentContainer"]
 layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="BtnLvl1" type="Button" parent="VBoxContainer/HBoxLevels"]
-custom_minimum_size = Vector2(120, 40)
+[node name="BtnLvl1" type="Button" parent="ContentContainer/HBoxLevels"]
+custom_minimum_size = Vector2(140, 44)
 layout_mode = 2
-text = "Двор I"
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+text = "I. ДВОР"
 
-[node name="BtnLvl2" type="Button" parent="VBoxContainer/HBoxLevels"]
-custom_minimum_size = Vector2(120, 40)
+[node name="BtnLvl2" type="Button" parent="ContentContainer/HBoxLevels"]
+custom_minimum_size = Vector2(140, 44)
 layout_mode = 2
-text = "Недострой II"
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+text = "II. СТРОЙКА"
 
-[node name="BtnLvl3" type="Button" parent="VBoxContainer/HBoxLevels"]
-custom_minimum_size = Vector2(120, 40)
+[node name="BtnLvl3" type="Button" parent="ContentContainer/HBoxLevels"]
+custom_minimum_size = Vector2(140, 44)
 layout_mode = 2
-text = "Кровля III"
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+text = "III. КРЫША"
 
-[node name="BtnControls" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 44)
+[node name="BtnControls" type="Button" parent="ContentContainer"]
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 19
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
 text = "⌨ УПРАВЛЕНИЕ"
 
-[node name="BtnQuit" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 44)
+[node name="BtnQuit" type="Button" parent="ContentContainer"]
+custom_minimum_size = Vector2(0, 48)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 19
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
 text = "ВЫХОД"
 
 [node name="ControlsDialog" type="Panel" parent="."]
@@ -104,12 +158,13 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -280.0
+offset_left = -300.0
 offset_top = -180.0
-offset_right = 280.0
+offset_right = 300.0
 offset_bottom = 180.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
 [node name="Title" type="Label" parent="ControlsDialog"]
 layout_mode = 1
@@ -119,13 +174,15 @@ anchor_right = 0.5
 offset_left = -200.0
 offset_top = 20.0
 offset_right = 200.0
-offset_bottom = 50.0
+offset_bottom = 54.0
 grow_horizontal = 2
-theme_override_font_sizes/font_size = 20
-text = "УПРАВЛЕНИЕ (ТОЛЬКО ПК)"
+theme_override_colors/font_color = Color(0.96, 0.62, 0.04, 1)
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 24
+text = "УПРАВЛЕНИЕ (ПК)"
 horizontal_alignment = 1
 
-[node name="Info" type="Label" parent="ControlsDialog"]
+[node name="VBoxKeys" type="VBoxContainer" parent="ControlsDialog"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -135,15 +192,34 @@ anchor_bottom = 0.5
 offset_left = -240.0
 offset_top = -80.0
 offset_right = 240.0
-offset_bottom = 80.0
+offset_bottom = 70.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "[W][A][S][D] — 4 направления руления
-[Пробел] — Прыжок с кувырком 360°
-[R] — Мгновенный рестарт уровня
+theme_override_constants/separation = 10
 
-Главное правило: скорость дают уклоны,
-трамплины и конвейеры, а не сила кнопок!"
+[node name="Row1" type="Label" parent="ControlsDialog/VBoxKeys"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+text = "[ W ][ A ][ S ][ D ]  ➔  4 Направления руления"
+
+[node name="Row2" type="Label" parent="ControlsDialog/VBoxKeys"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+text = "[ ПРОБЕЛ ]  ➔  Прыжок с кувырком 360°"
+
+[node name="Row3" type="Label" parent="ControlsDialog/VBoxKeys"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+text = "[ R ]  ➔  Быстрый рестарт уровня"
+
+[node name="Hint" type="Label" parent="ControlsDialog/VBoxKeys"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.75, 0.85, 1)
+theme_override_font_sizes/font_size = 13
+text = "Скорость дают уклоны, трамплины и конвейеры!"
 horizontal_alignment = 1
 
 [node name="BtnCloseControls" type="Button" parent="ControlsDialog"]
@@ -154,9 +230,13 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -80.0
-offset_top = -50.0
+offset_top = -54.0
 offset_right = 80.0
-offset_bottom = -15.0
+offset_bottom = -16.0
 grow_horizontal = 2
 grow_vertical = 0
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
 text = "ЗАКРЫТЬ"

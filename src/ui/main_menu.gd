@@ -1,25 +1,25 @@
 class_name MainMenu
 extends Control
 
-## Industrial style Main Menu with campaign launch, level select, and controls guide
-@onready var btn_play: Button = $VBoxContainer/BtnPlay
-@onready var btn_lvl1: Button = $VBoxContainer/HBoxLevels/BtnLvl1
-@onready var btn_lvl2: Button = $VBoxContainer/HBoxLevels/BtnLvl2
-@onready var btn_lvl3: Button = $VBoxContainer/HBoxLevels/BtnLvl3
-@onready var btn_quit: Button = $VBoxContainer/BtnQuit
+## Industrial style Main Menu with Lilita One typography and 100% reliable click bindings
+@onready var btn_play: Button = $ContentContainer/BtnPlay
+@onready var btn_lvl1: Button = $ContentContainer/HBoxLevels/BtnLvl1
+@onready var btn_lvl2: Button = $ContentContainer/HBoxLevels/BtnLvl2
+@onready var btn_lvl3: Button = $ContentContainer/HBoxLevels/BtnLvl3
+@onready var btn_controls: Button = $ContentContainer/BtnControls
+@onready var btn_quit: Button = $ContentContainer/BtnQuit
 @onready var controls_dialog: Panel = $ControlsDialog
-@onready var btn_controls: Button = $VBoxContainer/BtnControls
 @onready var btn_close_controls: Button = $ControlsDialog/BtnCloseControls
 
 func _ready() -> void:
 	if btn_play:
 		btn_play.pressed.connect(_on_play_pressed)
 	if btn_lvl1:
-		btn_lvl1.pressed.connect(func(): _load_direct(1))
+		btn_lvl1.pressed.connect(func(): _load_level(1))
 	if btn_lvl2:
-		btn_lvl2.pressed.connect(func(): _load_direct(2))
+		btn_lvl2.pressed.connect(func(): _load_level(2))
 	if btn_lvl3:
-		btn_lvl3.pressed.connect(func(): _load_direct(3))
+		btn_lvl3.pressed.connect(func(): _load_level(3))
 	if btn_controls:
 		btn_controls.pressed.connect(_on_controls_pressed)
 	if btn_close_controls:
@@ -31,9 +31,9 @@ func _ready() -> void:
 		controls_dialog.visible = false
 
 func _on_play_pressed() -> void:
-	get_tree().change_scene_to_file("res://src/levels/level_01.tscn")
+	_load_level(1)
 
-func _load_direct(idx: int) -> void:
+func _load_level(idx: int) -> void:
 	var scenes: Dictionary = {
 		1: "res://src/levels/level_01.tscn",
 		2: "res://src/levels/level_02.tscn",

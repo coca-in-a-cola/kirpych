@@ -1,26 +1,21 @@
 [gd_scene load_steps=8 format=3 uid="uid://worker001"]
 
 [ext_resource type="Script" path="res://src/entities/worker/worker_npc.gd" id="1_worker"]
-[ext_resource type="Material" path="res://assets/materials/worker_mat.tres" id="2_bodymat"]
+[ext_resource type="PackedScene" path="res://assets/models/worker_character.glb" id="2_char"]
 [ext_resource type="Material" path="res://assets/materials/helmet_mat.tres" id="3_helmetmat"]
 [ext_resource type="AudioStream" path="res://assets/audio/helmet_clang.wav" id="4_clang"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_worker"]
-radius = 0.4
-height = 1.8
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_worker"]
-material = ExtResource("2_bodymat")
-radius = 0.4
+radius = 0.45
 height = 1.8
 
 [sub_resource type="SphereMesh" id="SphereMesh_helmet"]
 material = ExtResource("3_helmetmat")
-radius = 0.32
-height = 0.36
+radius = 0.35
+height = 0.4
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_helmet"]
-radius = 0.45
+radius = 0.5
 
 [node name="WorkerNPC" type="CharacterBody3D"]
 collision_layer = 4
@@ -31,16 +26,15 @@ script = ExtResource("1_worker")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 shape = SubResource("CapsuleShape3D_worker")
 
-[node name="BodyMesh" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
-mesh = SubResource("CapsuleMesh_worker")
+[node name="CharacterModel" parent="." instance=ExtResource("2_char")]
+transform = Transform3D(0.9, 0, 0, 0, 0.9, 0, 0, 0, 0.9, 0, 0, 0)
 
 [node name="HelmetMesh" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.82, 0)
 mesh = SubResource("SphereMesh_helmet")
 
 [node name="HelmetArea" type="Area3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.85, 0)
 collision_layer = 4
 collision_mask = 1
 
