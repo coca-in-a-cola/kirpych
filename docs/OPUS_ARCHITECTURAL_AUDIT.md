@@ -1,0 +1,95 @@
+# Kirpych Architectural Audit (t_kp_12)
+
+## Test suite (godot-xvfb --headless)
+
+| Test | Exit | Result |
+|---|---|---|
+| test_brick_physics | 0 | 5/5 PASS |
+| test_level_02 | 0 | 4/4 PASS |
+| test_level_03 | 0 | 4/4 PASS |
+| test_campaign_flow | 0 | 3/3 PASS |
+
+The logs show no errors or warnings. The passes mean little: the tests call handlers directly (_on_body_entered, _physics_process(0.5)). They never simulate physics, send input, or check whether a level can be traversed.
+
+## Measured defects
+
+**Controller.** Measured with a new probe, tools/audit/controller_probe.gd, which runs the real brick.tscn on a flat slab:
+- Holding W alone reaches 144 km/h (the clamp) in about 8s. It hits 36 km/h in 1.5s and 100 km/h in 4.15s. This breaks the GDD rule that input applies only a weak force. Cause: brick.gd:10-11, acceleration 8.5 against a constant friction of 1.8 m/s^2.
+- Carving with D gains speed. Over 3s it goes from 19.9 to 24.5 m/s and turns 95 degrees. Causes: the lateral 1.5x boost at brick.gd:92 and the renormalisation at :97-98. That renormalisation also breaks GDD section 4, which forbids normalising velocity.
+- The brick feels like it is on ice. Coasting from 72 km/h takes 11s and 110m to stop.
+- The per-axis speed clamp leaks. brick.gd:154 clamps each axis to 40, so a diagonal can reach 56.3 m/s.
+- Slope pull is not physical. brick.gd:70 multiplies gravity by slope_accel_factor = 1.8.
+- The speedometer counts vertical velocity (:184).
+- Jump: apex 2.08m, air time 0.97s. Air vs ground acceleration over 0.5s: 4.18 vs 3.35 m/s, which fits the GDD.
+
+**Camera (camera_rail.gd).**
+- It is not a rail at all. Track direction is hardcoded to +Z.
+- Line 34 makes the camera follow x * 0.75. As a result, what W means silently rotates with lateral position: 6.6 degrees off at x=4 and 17.7 degrees at x=11. This breaks the GDD 'honest camera' rule.
+- Line 36 hard-locks z while x and y are lerped, which risks jitter.
+- There is no wall or occlusion handling.
+- The input basis includes the camera roll (lines 47-49), so the roll tilt also skews the movement directions.
+
+**Procedural primitives still in use.**
+
+| Level | Count | What |
+|---|---|---|
+| L1 | 5 | ground BoxMesh 24x130, ramp, tire, awning, helmet |
+| L2 | 7 | 3 floors, conveyor, lift, door, helmet |
+| L3 | 8 | roof, beam, fan, crane, launch ramp, cradle, net, helmet |
+
+- tarp_canopy, platform_medium, platform_tile, concrete_slab and building_garage are unused.
+- All Kenney building GLBs are 1m unit footprints. That makes the site office 2.5x2.4m, the L2 'building' 3.5x5.7x4.5m, and the L3 'building below' 6.5m tall while the roof sits at y=27. The roof floats in the air.
+- The L1 'perimeter walls' are four 1.75m stubs.
+- The worker model is 0.99m tall, but its capsule is 1.8m. The helmet sphere floats about 0.8m above its head.
+
+**Colliders.**
+- L1 start scaffold: the visual is 15.5x12.5m but the collider is only 6.2x10m, so the player sees floor where there is none. The visual top is also 0.05m above the collider.
+- L2 Floor2: the visual (30m) is longer than the collider (26m), giving 2m of floor with no collision at each end. Floor1 has the reverse problem: 1m of invisible floor at each end. All floors share one BoxMesh_floor.
+- No solid body at all: tire, awning, conveyor and fan are Area3D only, and the L3 cradle and safety net have no colliders.
+
+**Z-fighting.**
+- L3 RoofPlatform and NarrowBeam share a top face at y=28.05 over 2.4 sq m (exact, gap 0).
+- The L1 awning mesh sinks 1m into YardGround.
+
+**Progression blockers (static geometry, not playtested).**
+- L2: Floor2 (top 12.55) meets Floor3 (top 16.55) as a 4m wall at z=65, with no ramp. The jump apex is 2.08m.
+- L2: the worker spawns at z=92, behind the door at z=88, and runs to target_door_z = 120. Floor3 ends at z=95, so the worker runs off the edge.
+
+**Prop logic.**
+- conveyor_belt.gd:18 drives the whole velocity, including y, toward the belt vector. This kills gravity, jumps and steering.
+- bouncy_tire.gd:13 applies a fixed +Z impulse regardless of approach.
+- awning_slide.gd:18 hard-resets friction to 1.8 on exit.
+- metal_door.gd:22 rotates the door about its centre, not a hinge.
+- Determinism breaks: worker_npc.gd:40 uses Time, and :63 uses randf_range.
+
+**Systems.**
+- GameManager is not an autoload (project.godot has no [autoload] section). GameManager.instance is always null, so level results are never recorded.
+- Missing GDD features: pause on Esc; the score formula; best score; time and fail stats; worker animation and direction.
+- config/features still says 4.3 / Forward Plus, while the project uses gl_compatibility on 4.7.2.
+
+**UI.**
+- Lilita One has zero Cyrillic glyphs (66 of 66 missing) and lacks the symbols used in UI text. Every Russian label renders in a system fallback font, so the 'Lilita One UI' claim is false. A Cyrillic-capable OFL display font is needed.
+- 'Non-clickable buttons' did not reproduce in a real 1280x720 window. All 6 menu buttons and both victory buttons received hover and one click each when clicked at their centres.
+  - Under --headless the viewport reports 1280x1280 and gets 0 clicks, so headless runs are not valid UI evidence.
+  - Real defects found instead: pressed, focus and disabled styles are unset (main_menu.tscn); the HUD buttons (hud.tscn:135-147) have no styles at all; there is no initial grab_focus; and gameplay keeps running behind the victory panel.
+  - The owner's actual repro steps are still needed to confirm which buttons they meant.
+
+**Screenshots.**
+- The capture tool exited 0 and wrote four 1280x720 PNGs: menu 32.5 KB, L1 206 KB, L2 13.8 KB, L3 257 KB.
+- The 13.8 KB L2 frame is suspiciously small and is likely near-blank; this needs visual confirmation in the next pass.
+
+## Prioritised fixes for the next phase
+
+1. P0 - UI font: switch to a Cyrillic-capable display font.
+2. P0 - L2 completability: add a ramp or chute up the 4m step, and correct the worker route/endpoint so it does not run off the floor edge.
+3. P0 - Colliders: match visual and collider extents on the L1 scaffold and L2 floors; add solid StaticBody collision under the conveyor, fan, cradle and net (currently Area3D-only or missing).
+4. P0 - GameManager: register it as an autoload in project.godot.
+5. P1 - Controller: remove the velocity renormalisation and lateral boost (brick.gd:92-98); use speed-dependent friction/input so holding W alone cannot exceed roughly 20-25 km/h; clamp by vector length, not per axis; drop the slope_accel_factor multiplier.
+6. P1 - Camera: build real rail segments with a frozen input basis while airborne; remove the x-position-driven yaw lerp; strip roll out of the movement input basis; add a wall/occlusion probe.
+7. P1 - Assets: replace every remaining primitive with correctly scaled Kenney GLBs on a uniform scale with separate hand-built colliders; fix the roof/beam z-fight; fix the worker model scale and helmet offset.
+8. P2 - Missing features: pause on Esc, score formula + best score persistence, determinism fixes (remove Time/randf_range from gameplay-affecting logic), UI button state styles + initial focus, worker run animation, correct project.godot features string.
+
+## Known gaps in this audit (to close in the next pass)
+
+- The four freshly captured screenshots in artifacts/screenshots/ have not been visually reviewed yet; the L2 screenshot in particular (13.8 KB) needs a human/vision check for a near-blank frame.
+- The owner's specific 'half the buttons non-clickable' repro was not reproduced in a real windowed run; needs the owner's exact click sequence to confirm root cause.
