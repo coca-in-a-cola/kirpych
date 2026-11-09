@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://awning001"]
+
+[ext_resource type="Script" path="res://src/entities/props/awning_slide.gd" id="1_awning"]
+[ext_resource type="Material" path="res://assets/materials/tarp_mat.tres" id="2_mat"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_awning"]
+size = Vector3(8.0, 0.4, 25.0)
+
+[sub_resource type="BoxMesh" id="BoxMesh_awning"]
+material = ExtResource("2_mat")
+size = Vector3(8.0, 0.2, 25.0)
+
+[node name="AwningSlide" type="Area3D"]
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("1_awning")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_awning")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_awning")
