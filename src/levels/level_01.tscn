@@ -1,0 +1,109 @@
+[gd_scene load_steps=18 format=3 uid="uid://lvl01_001"]
+
+[ext_resource type="Script" path="res://src/levels/level_01.gd" id="1_lvl"]
+[ext_resource type="PackedScene" path="res://src/entities/brick/brick.tscn" id="2_brick"]
+[ext_resource type="Script" path="res://src/camera/camera_rail.gd" id="3_cam"]
+[ext_resource type="PackedScene" path="res://src/entities/worker/worker_npc.tscn" id="4_worker"]
+[ext_resource type="PackedScene" path="res://src/ui/hud.tscn" id="5_hud"]
+[ext_resource type="PackedScene" path="res://src/entities/props/bouncy_tire.tscn" id="6_tire"]
+[ext_resource type="PackedScene" path="res://src/entities/props/awning_slide.tscn" id="7_awning"]
+[ext_resource type="Material" path="res://assets/materials/concrete_mat.tres" id="8_conc"]
+[ext_resource type="Material" path="res://assets/materials/plywood_mat.tres" id="9_wood"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
+sky_top_color = Color(0.38, 0.65, 0.95, 1.0)
+sky_horizon_color = Color(0.72, 0.82, 0.92, 1.0)
+ground_bottom_color = Color(0.25, 0.22, 0.18, 1.0)
+ground_horizon_color = Color(0.65, 0.62, 0.58, 1.0)
+
+[sub_resource type="Sky" id="Sky_sky"]
+sky_material = SubResource("ProceduralSkyMaterial_sky")
+
+[sub_resource type="Environment" id="Environment_env"]
+background_mode = 2
+sky = SubResource("Sky_sky")
+ambient_light_source = 3
+ambient_light_color = Color(0.9, 0.88, 0.82, 1.0)
+tonemap_mode = 2
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
+size = Vector3(20.0, 1.0, 130.0)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ground"]
+material = ExtResource("8_conc")
+size = Vector3(20.0, 1.0, 130.0)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_scaffold"]
+size = Vector3(6.0, 1.0, 10.0)
+
+[sub_resource type="BoxMesh" id="BoxMesh_scaffold"]
+material = ExtResource("9_wood")
+size = Vector3(6.0, 1.0, 10.0)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ramp"]
+size = Vector3(6.0, 0.4, 20.0)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ramp"]
+material = ExtResource("9_wood")
+size = Vector3(6.0, 0.4, 20.0)
+
+[node name="Level01" type="Node3D"]
+script = ExtResource("1_lvl")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_env")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866, -0.353, 0.353, 0, 0.707, 0.707, -0.5, -0.612, 0.612, 0, 20, 0)
+shadow_enabled = true
+
+[node name="YardGround" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 65)
+collision_layer = 2
+collision_mask = 5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="YardGround"]
+shape = SubResource("BoxShape3D_ground")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="YardGround"]
+mesh = SubResource("BoxMesh_ground")
+
+[node name="StartScaffold" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 11.5, 0)
+collision_layer = 2
+collision_mask = 5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StartScaffold"]
+shape = SubResource("BoxShape3D_scaffold")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="StartScaffold"]
+mesh = SubResource("BoxMesh_scaffold")
+
+[node name="DownhillRamp" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.927, 0.374, 0, -0.374, 0.927, 0, 5.8, 14)
+collision_layer = 2
+collision_mask = 5
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="DownhillRamp"]
+shape = SubResource("BoxShape3D_ramp")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="DownhillRamp"]
+mesh = SubResource("BoxMesh_ramp")
+
+[node name="BouncyTire" parent="." instance=ExtResource("6_tire")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 34)
+
+[node name="AwningSlide" parent="." instance=ExtResource("7_awning")]
+transform = Transform3D(1, 0, 0, 0, 0.985, 0.174, 0, -0.174, 0.985, 0, 1.2, 54)
+
+[node name="Brick" parent="." instance=ExtResource("2_brick")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12.5, -2)
+
+[node name="CameraRail" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.966, 0.259, 0, -0.259, 0.966, 0, 14.8, -6.8)
+script = ExtResource("3_cam")
+
+[node name="WorkerNPC" parent="." instance=ExtResource("4_worker")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 85)
+
+[node name="GameHUD" parent="." instance=ExtResource("5_hud")]
