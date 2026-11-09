@@ -126,6 +126,17 @@ Fixed in commit `fix(colliders): match visual/collider extents on L1/L2 floors, 
 - **New probes:** `tools/audit/prop_traversal_probe.gd` and `tools/audit/conveyor_lift_gap_probe.gd`.
 - **Screenshots:** re-captured. The level_02 frame still shows a blown-out white floor on a black background, but the pre-change baseline looks the same, so this is not a regression from this change.
 
-### KNOWN OPEN ISSUE (not resolved)
+### Known open issue at t_kp_16 close
 
-- The L2 conveyor-to-lift gap (z~28.5 to the MovingLift at z33-39) is a confirmed progression blocker — 0/90 tested traversal strategies reached Floor2 from the conveyor exit. This requires a dedicated geometry fix (extending Floor1, repositioning the lift, or adding a connector) and is tracked as a separate follow-up task.
+- The L2 conveyor-to-lift gap was moved to Resolved in t_kp_17 (see below).
+
+## Resolved (t_kp_17)
+
+- **L2 conveyor-to-lift progression gap** (z~28.5 to the MovingLift at z33-39; it was 0/90 traversal strategies reaching Floor2 at t_kp_16). Fixed in commit `2780e9d` with three changes:
+  - Floor1_LoadingBay was extended to 14x1x33, centred at z=16.5.
+  - MovingLift was re-seated at y=-0.35 with `travel_distance=13.0`, and a ToeGuard collider was added under the deck edge.
+  - A `LiftShaftBackWall` StaticBody3D was added at z=39.2.
+- **Verification:**
+  - `tools/audit/conveyor_lift_gap_probe.gd` now reaches Floor2 in **53/108** strategy-runs. That includes 18/18 for the new `board` and `brake+board` strategies.
+  - The full headless suite passes (test_brick_physics, test_level_02, test_level_03, test_campaign_flow, test_colliders, all exit 0).
+  - test_colliders confirms the Floor1 visual and collider both span z 0..33.
