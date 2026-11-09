@@ -1,0 +1,74 @@
+<svg width="1200" height="600" viewBox="0 0 1200 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="trackGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f97316" stop-opacity="0.3"/>
+      <stop offset="50%" stop-color="#eab308" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#ef4444" stop-opacity="0.6"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background Grid -->
+  <rect width="1200" height="600" fill="url(#bgGrad)"/>
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#334155" stroke-width="1" stroke-opacity="0.4"/>
+  </pattern>
+  <rect width="1200" height="600" fill="url(#grid)"/>
+
+  <!-- Title & Legend -->
+  <text x="40" y="45" font-family="monospace" font-size="20" font-weight="bold" fill="#f8fafc">УРОВЕНЬ I: «РАБОЧАЯ СМЕНА» — 2D ТОПОГРАФИЧЕСКИЙ ПЛАН</text>
+  <text x="40" y="75" font-family="monospace" font-size="12" fill="#94a3b8">Масштаб: 10px = 1 метр | Общая длина: 120м | Цель: Желтая каска рабочего</text>
+
+  <!-- Track Corridor -->
+  <path d="M 60 250 C 200 250, 300 280, 450 280 C 600 280, 700 220, 850 220 C 950 220, 1050 250, 1140 250" 
+        fill="none" stroke="url(#trackGrad)" stroke-width="100" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Critical Spline Path (Camera & Navigation) -->
+  <path d="M 60 250 C 200 250, 300 280, 450 280 C 600 280, 700 220, 850 220 C 950 220, 1050 250, 1140 250" 
+        fill="none" stroke="#38bdf8" stroke-width="4" stroke-dasharray="6,6"/>
+
+  <!-- Zone 0: Scaffold Start -->
+  <rect x="50" y="200" width="80" height="100" rx="6" fill="#b45309" stroke="#f59e0b" stroke-width="2"/>
+  <text x="90" y="245" font-family="monospace" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle">СТАРТ</text>
+  <text x="90" y="265" font-family="monospace" font-size="9" fill="#fef3c7" text-anchor="middle">Помост (+12м)</text>
+
+  <!-- Zone 1: Downhill Ramp & Tires -->
+  <polygon points="180,210 260,230 260,270 180,290" fill="#78350f" stroke="#d97706" stroke-width="2"/>
+  <text x="220" y="255" font-family="monospace" font-size="10" fill="#ffffff" text-anchor="middle">Скат 22°</text>
+
+  <circle cx="360" cy="280" r="22" fill="#1e293b" stroke="#10b981" stroke-width="4"/>
+  <text x="360" y="284" font-family="monospace" font-size="10" font-weight="bold" fill="#10b981" text-anchor="middle">ШИНЫ</text>
+  <text x="360" y="320" font-family="monospace" font-size="9" fill="#6ee7b7" text-anchor="middle">+8m/s Y Boost</text>
+
+  <!-- Zone 2: Awning Low-Friction Slide -->
+  <rect x="480" y="230" width="180" height="90" rx="8" fill="#0284c7" stroke="#38bdf8" stroke-width="3" stroke-dasharray="4,2"/>
+  <text x="570" y="275" font-family="monospace" font-size="12" font-weight="bold" fill="#e0f2fe" text-anchor="middle">ТЕНТ (Low-Friction 0.05)</text>
+  <text x="570" y="295" font-family="monospace" font-size="10" fill="#bae6fd" text-anchor="middle">Разгон до 60 км/ч</text>
+
+  <!-- Zone 3: Scaffolding Gap / Pit -->
+  <rect x="720" y="160" width="120" height="50" fill="#dc2626" fill-opacity="0.3" stroke="#ef4444" stroke-width="2"/>
+  <text x="780" y="190" font-family="monospace" font-size="10" fill="#fca5a5" text-anchor="middle">ПРОВАЛ / ЯМА</text>
+  <line x1="710" y1="220" x2="850" y2="220" stroke="#f59e0b" stroke-width="8"/>
+  <text x="780" y="240" font-family="monospace" font-size="9" fill="#fef08a" text-anchor="middle">Узкий мостик (Space Jump)</text>
+
+  <!-- Zone 4: The Finish & Worker's Helmet -->
+  <rect x="1080" y="200" width="60" height="100" fill="#334155" stroke="#64748b" stroke-width="2"/>
+  <circle cx="1110" cy="250" r="18" fill="#eab308" stroke="#ca8a04" stroke-width="3"/>
+  <text x="1110" y="255" font-family="monospace" font-size="10" font-weight="bold" fill="#0f172a" text-anchor="middle">КАСКА</text>
+  <text x="1110" y="320" font-family="monospace" font-size="10" font-weight="bold" fill="#facc15" text-anchor="middle">ФИНИШ (120м)</text>
+  <text x="1110" y="335" font-family="monospace" font-size="9" fill="#94a3b8" text-anchor="middle">Замер скорости удара</text>
+
+  <!-- Obstacles & Debris Decor -->
+  <rect x="310" y="230" width="20" height="20" fill="#475569" stroke="#64748b"/>
+  <rect x="680" y="280" width="25" height="15" fill="#475569" stroke="#64748b"/>
+  <polygon points="940,230 950,210 960,230" fill="#ea580c"/>
+  <polygon points="980,260 990,240 1000,260" fill="#ea580c"/>
+
+  <!-- HUD Speedometer Preview -->
+  <rect x="500" y="500" width="200" height="60" rx="10" fill="#0f172a" stroke="#e05a47" stroke-width="2"/>
+  <text x="600" y="530" font-family="monospace" font-size="11" fill="#94a3b8" text-anchor="middle">СКОРОСТЬ УДАРА</text>
+  <text x="600" y="552" font-family="monospace" font-size="18" font-weight="bold" fill="#f97316" text-anchor="middle">00.0 КМ/Ч</text>
+</svg>
