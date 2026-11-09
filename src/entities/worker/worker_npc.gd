@@ -15,10 +15,23 @@ var is_hit: bool = false
 var has_escaped: bool = false
 var helmet_detached: bool = false
 var helmet_velocity: Vector3 = Vector3.ZERO
+var anim_player: AnimationPlayer = null
 
 func _ready() -> void:
 	if helmet_area:
 		helmet_area.body_entered.connect(_on_helmet_body_entered)
+	_setup_animation()
+
+func _setup_animation() -> void:
+	if has_node("CharacterModel"):
+		anim_player = $CharacterModel.get_node_or_null("AnimationPlayer")
+	if anim_player == null:
+		anim_player = find_child("AnimationPlayer", true, false) as AnimationPlayer
+	if anim_player:
+		if anim_player.has_animation("walk"):
+			anim_player.play("walk")
+		elif anim_player.has_animation("run"):
+			anim_player.play("run")
 
 func _physics_process(delta: float) -> void:
 	if is_hit:
@@ -38,8 +51,18 @@ func _physics_process(delta: float) -> void:
 		velocity.z = run_speed
 		# Slight comedic wobble
 		rotation.y = sin(Time.get_ticks_msec() * 0.008) * 0.15
+		if anim_player and not anim_player.is_playing():
+			if anim_player.has_animation("walk"):
+				anim_player.play("walk")
+			elif anim_player.has_animation("run"):
+				anim_player.play("run")
 	else:
 		velocity.z = 0.0
+		if anim_player and anim_player.is_playing() and anim_player.current_animation in ["walk", "run"]:
+			if anim_player.has_animation("idle"):
+				anim_player.play("idle")
+			else:
+				anim_player.stop()
 	
 	# Real gravity while running, so the worker can never glide on air past a floor edge;
 	# each level must place target_door_z on solid floor (GDD 8: NPC stays in a reachable end zone).
@@ -74,3 +97,10 @@ func _on_helmet_body_entered(body: Node3D) -> void:
 	
 	# Knock worker forward into door
 	velocity = Vector3(0.0, 4.0, 6.0 + (speed_kmh * 0.15))
+	if anim_player:
+		if anim_player.has_animation("jump"):
+			anim_player.play("jump")
+		elif anim_player.has_animation("static"):
+			anim_player.play("static")
+		else:
+			anim_player.stop()

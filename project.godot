@@ -6,7 +6,7 @@ config/name="Догони меня, кирпич!"
 config/description="3D physics platformer about an animated terracotta brick chasing a construction worker."
 config/version="0.1.0"
 run/main_scene="res://src/ui/main_menu.tscn"
-config/features=PackedStringArray("4.3", "Forward Plus")
+config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [display]

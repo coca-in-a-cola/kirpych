@@ -194,3 +194,11 @@ Stills were re-captured with `tools/capture/capture_stills.tscn`. In all three l
 **Follow-ups:**
 - The authored rails are straight because the level layouts are straight. Directed curved segments, and a camera that steers into them, need level-design passes.
 - The occlusion probe also reacts to moving layer-2 props (crane, lift). It has not yet been play-tested for pumping as the crane swings through the view.
+
+## Resolved (t_kp_19)
+
+- **Worker Scale & Helmet Alignment:** `CharacterModel` scale in `src/entities/worker/worker_npc.tscn` updated from 0.9 to `(1.8, 1.8, 1.8)`. The worker's visible head now seats directly under `HelmetMesh` (y=1.82m) and `HelmetArea` (y=1.85m), perfectly matching the 1.8m capsule collider. In `src/entities/worker/worker_npc.gd`, the internal `AnimationPlayer` is wired to automatically play "walk" during movement, "idle" at destination, and "jump"/"static" upon helmet impact.
+- **Awning Prop Replacement:** In `src/entities/props/awning_slide.tscn`, the procedural `BoxMesh` is replaced with the authentic CC0 asset `assets/models/tarp_canopy.glb`. Both `SolidBody` and `SlideArea` colliders are sized to `(10.0, 4.200105, 10.0)` positioned at `(0, 2.10005, 0)` matching visual bounds with 0.0000 deviation in `tests/test_colliders.gd`.
+- **Pause Menu on Esc:** Implemented `PausePanel` (`PROCESS_MODE_ALWAYS`) in `src/ui/hud.tscn` / `hud.gd` with buttons 'ПРОДОЛЖИТЬ', 'ЗАНОВО', and 'В МЕНЮ', toggled cleanly via the `ui_cancel` (Escape) action.
+- **Button Feedback Styles:** Added `hover`, `pressed`, and `focus` `StyleBoxFlat` theme overrides across all buttons in `src/ui/main_menu.tscn` and `src/ui/hud.tscn` with caution-gold borders (`#f59e0b`) and dark graphite surfaces.
+- **Project Configuration:** `project.godot` updated to `features=PackedStringArray("4.7", "GL Compatibility")`.
