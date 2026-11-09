@@ -53,7 +53,11 @@
    ```
 2. Откройте проект в Godot 4.3+ и нажмите **Play** (`F5`). Главное меню загрузится автоматически.
 
-### Вариант 2: Запуск готового релиза (Standalone PCK)
+### Вариант 2: Запуск готового релиза для Windows
+1. Скачайте архив **`kirpych-v0.1.0-windows-x64.zip`** со [страницы релизов](https://github.com/coca-in-a-cola/kirpych/releases/latest).
+2. Распакуйте архив и запустите **`kirpych.exe`**.
+
+### Вариант 3: Запуск на Linux (Standalone PCK)
 Скачайте бинарный пакет `kirpych-v0.1.0-linux.pck` со [страницы релизов](https://github.com/coca-in-a-cola/kirpych/releases/latest) и запустите через движок:
 ```bash
 godot4 --main-pack kirpych-v0.1.0-linux.pck
